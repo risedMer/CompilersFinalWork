@@ -1,0 +1,16 @@
+%token 声明给定符号
+%token<type> 声明给定符号，定义类型
+%start 声明解释器开始解析的规则
+%type<type> 声明特定规则的类型
+%left 声明符号作为左关联，解决语法歧义
+%right 声明符号作为右关联，解决语法歧义
+%nonassoc 声明符号作为无关联，解决语法歧义
+
+声明与规则用 %% 分隔开
+
+例子：
+Expression: ID { Ident($1) }
+	| FLOAT { Val($1) }
+Expression 规则名 
+ID 和 FLOAT 为两个规则 
+{} 里是规则的动作
