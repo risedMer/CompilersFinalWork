@@ -1,0 +1,51 @@
+%{
+    open XMAbsyn
+
+    let compose1 f (g,s) = ((fun x -> g(f(x))),s)
+    let nl = CstInt 10
+%}
+
+%token <int> CSTINT CSTBOOL
+%token <string> CSTSTRING NAME
+
+%token CHAR IF ELSE INT NULL PRINT PRINTLN RETURN VOID WHILE
+%token PLUS MINUS TIMES DIV MOD
+%token EQ NE GT LT GE LE  /* EQUAL | NOT EQUAL | GREATER THAN | LESS THAN | GREATER THAN OR EQUAL | LESS THAN OR EQUAL */
+%token NOT SEQOR SEQAND
+%token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP
+%token EOF
+
+%right ASSIGN
+%nonassoc PRINT
+%left SEQOR
+%left SEQAND
+%left EQ NE
+%nonassoc GT LT GE LE
+%left PLUS MINUS
+%left TIMES DIV MOD
+%nonassoc NOT AMP
+%nonassoc LBRACK
+
+%start Main
+%type <XMAbsyn.program> Main
+
+%%
+
+Main:
+    Topdecs EOF                     { Prog $1 }
+;
+
+Topdecs:
+                                    { [] }
+    | Topdec Topdecs                { $1 :: $2 }
+;
+
+Topdec:
+      Vardec SEMI                   { Vardec (fst $1,snd $1) }
+    | Fundec                        { $1 }
+;
+
+Vardec:
+    Type Vardesc                    { ((fst $2) $1, snd %2) }
+;
+

@@ -1,0 +1,4 @@
+{
+    open FSharp.Text.Lexing
+    open XMPar
+}
