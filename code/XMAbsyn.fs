@@ -13,7 +13,12 @@ and expr =                          // 表达式右值
     | Address of access             (* &x   or  &*p     or  &a[e]   *)
     | CstInt of int                 (* Constant int                 *)
     | CstChar of char               (* Constant char    new         *)
-    | CstFloat of float32           (* Constant float   new         *)
+    | CstFloat of float             (* Constant float   new         *)
+    | Prim1 of string * expr        (* Unary primitive operator     *)
+    | Prim2 of string * expr * expr (* Binary primitive operator    *)
+    | Andalso of expr * expr        (* Sequential and               *)
+    | Orelse of expr * expr         (* Sequential or                *)
+    | Call of string * expr list    (* Function call f(...)         *)
 
 and access =                        // 左值存储的位置
     | AccVar of string              (* Variable access        x     *)

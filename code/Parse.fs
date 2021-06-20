@@ -25,12 +25,14 @@ let token buf =
 let fromFile (filename : string) =
     use reader = new StreamReader(filename)
     let lexbuf = Lexing.LexBuffer<char>.FromTextReader reader
-    try
-        msg "\nToken:\n"
-        let ast = XMPar.Main token lexbuf in
-            msg "\nAST:\n"
-            ast
-    with
-        | exn -> let pos = lexbuf.EndPos
-                 failwithf "%s in file %s near line %d, column %d\n"
-                    (exn.Message) filename (pos.Line + 1) pos.Column
+    try 
+      msg "\nToken:\n"
+      
+      //CPar.Main  语法分析主程序 
+      let ast = XMPar.Main token lexbuf in
+        msg "\nAST:\n";
+        ast
+    with 
+      | exn -> let pos = lexbuf.EndPos 
+               failwithf "%s in file %s near line %d, column %d\n" 
+                  (exn.Message) filename (pos.Line+1) pos.Column

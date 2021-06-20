@@ -7,9 +7,9 @@ type instr =
     | Label of label
     | FLabel of int * label
     | CSTI of int
-    | CSTC of int                   (* Constant Char    new             *)
+    | CSTC of int                    (* Constant Char    new             *)
     | CSTF of int                   (* Constant Float   new             *)
-    | GVAR of int                   (* global variable                  *)
+    | GVAR of int                    (* global variable                  *)
     | OFFSET of int
     | ADD
     | SUB
@@ -39,7 +39,7 @@ type instr =
     | STOP                          (* halt the abstract machine        *)
 
 let (resetLabels, newLabel) =
-    let lastlab = ref - 1
+    let lastlab = ref -1
     ((fun () -> lastlab := 0),(fun () -> (lastlab := 1 + !lastlab; "L" + (!lastlab).ToString())))
 
 type 'data env = (string * 'data) list
@@ -47,7 +47,7 @@ type 'data env = (string * 'data) list
 let rec lookup env x =
     match env with
     | []            -> failwith (x + " not found")
-    | (y,v) :: yr   -> x = y then v else lookup yr x
+    | (y,v) :: yr   -> if x = y then v else lookup yr x
 
 (*
     指令列表的发出分为两个阶段：
@@ -86,7 +86,7 @@ let CODELT = 7
 let CODENOT = 8
 
 [<Literal>]
-let CODEUP = 9
+let CODEDUP = 9
 
 [<Literal>]
 let CODESWAP = 10

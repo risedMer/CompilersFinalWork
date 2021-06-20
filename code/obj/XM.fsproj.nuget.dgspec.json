@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj": {}
+    "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj": {}
   },
   "projects": {
-    "e:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj": {
+    "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj",
+        "projectUniqueName": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj",
         "projectName": "XM",
-        "projectPath": "e:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj",
+        "projectPath": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\XM.fsproj",
         "packagesPath": "C:\\Users\\ZTY\\.nuget\\packages\\",
-        "outputPath": "e:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\obj\\",
+        "outputPath": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ZTY\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -15,10 +15,10 @@
         <Compile Include="XMPar.fs" />
         <Compile Include="XMLex.fs" />
         <Compile Include="Parse.fs" />
-        <!-- <Compile Include="Machine.fs" /> -->
-        <!-- <Compile Include="Backend.fs" /> -->
-        <!-- <Compile Include="Comp.fs" /> -->
-        <!-- <Compile Include="XM.fs" /> -->
+        <Compile Include="XMMachine.fs" />
+        <Compile Include="Backend.fs" />
+        <Compile Include="XMComp.fs" />
+        <Compile Include="XM.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="FsLexYacc" Version="10.2.0"/>
