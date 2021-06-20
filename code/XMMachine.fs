@@ -8,7 +8,7 @@ type instr =
     | FLabel of int * label
     | CSTI of int
     | CSTC of int                    (* Constant Char    new             *)
-    | CSTF of int                   (* Constant Float   new             *)
+    | CSTD of int                    (* Constant Double  new             *)
     | GVAR of int                    (* global variable                  *)
     | OFFSET of int
     | ADD
@@ -34,7 +34,7 @@ type instr =
     | RET of int                    (* pop m and return to s[sp]        *)
     | PRINTI                        (* print s[sp] as integer           *)
     | PRINTC                        (* print s[sp] as character         *)
-    | PRINTF                        (* print s[sp] as float   new       *)
+    | PRINTD                        (* print s[sp] as double  new       *)
     | LDARGS of int                 (* load command line args on stack  *)
     | STOP                          (* halt the abstract machine        *)
 
@@ -141,10 +141,10 @@ let CODESTOP = 25
 let CODECSTC = 26
 
 [<Literal>]
-let CODECSTF = 27
+let CODECSTD = 27
 
 [<Literal>]
-let CODEPRINTF = 28
+let CODEPRINTD = 28
 
 // 获得标签在机器码中的地址
 let makelabenv (addr,labenv) instr =
@@ -153,7 +153,7 @@ let makelabenv (addr,labenv) instr =
     | FLabel (m,lab)        -> (addr,(lab,addr) :: labenv)
     | CSTI i                -> (addr + 2,labenv)
     | CSTC i                -> (addr + 2,labenv) // new
-    | CSTF i                -> (addr + 2,labenv) // new
+    | CSTD i                -> (addr + 2,labenv) // new
     | GVAR i                -> (addr + 2,labenv)
     | OFFSET i              -> (addr + 2,labenv)
     | ADD                   -> (addr + 1,labenv)
@@ -179,7 +179,7 @@ let makelabenv (addr,labenv) instr =
     | RET m                 -> (addr + 2,labenv)
     | PRINTI                -> (addr + 1,labenv)
     | PRINTC                -> (addr + 1,labenv)
-    | PRINTF                -> (addr + 1,labenv) // new
+    | PRINTD                -> (addr + 1,labenv) // new
     | LDARGS m              -> (addr + 2,labenv)
     | STOP                  -> (addr + 1,labenv)
 
@@ -193,7 +193,7 @@ let rec emitints getlab instr ints =
     | FLabel (m,lab)    -> ints
     | CSTI i            -> CODECSTI     :: i :: ints
     | CSTC i            -> CODECSTC     :: i :: ints // new
-    | CSTF i            -> CODECSTF     :: i :: ints // new
+    | CSTD i            -> CODECSTD     :: i :: ints // new
     | GVAR i            -> CODECSTI     :: i :: ints
     | OFFSET i          -> CODECSTI     :: i :: ints
     | ADD               -> CODEADD      :: ints
@@ -219,7 +219,7 @@ let rec emitints getlab instr ints =
     | RET m             -> CODERET      :: m :: ints
     | PRINTI            -> CODEPRINTI   :: ints
     | PRINTC            -> CODEPRINTC   :: ints
-    | PRINTF            -> CODEPRINTF   :: ints // new
+    | PRINTD            -> CODEPRINTD   :: ints // new
     | LDARGS m          -> CODELDARGS   :: m :: ints
     | STOP              -> CODESTOP     :: ints
 
@@ -265,10 +265,10 @@ let rec decomp ints : instr list =
     | CODERET    :: m :: ints_rest              -> RET m                   :: decomp ints_rest
     | CODEPRINTI :: ints_rest                   -> PRINTI                  :: decomp ints_rest
     | CODEPRINTC :: ints_rest                   -> PRINTC                  :: decomp ints_rest
-    | CODEPRINTF :: ints_rest                   -> PRINTF                  :: decomp ints_rest // new
+    | CODEPRINTD :: ints_rest                   -> PRINTD                  :: decomp ints_rest // new
     | CODELDARGS :: ints_rest                   -> LDARGS 0                :: decomp ints_rest
     | CODESTOP   :: ints_rest                   -> STOP                    :: decomp ints_rest
     | CODECSTI   :: i :: ints_rest              -> CSTI i                  :: decomp ints_rest
     | CODECSTC   :: i :: ints_rest              -> CSTC i                  :: decomp ints_rest // new
-    | CODECSTF   :: i :: ints_rest              -> CSTF i                  :: decomp ints_rest // new
+    | CODECSTD   :: i :: ints_rest              -> CSTD i                  :: decomp ints_rest // new
     | _                                         -> printf "%A" ints; failwith "unknow code"

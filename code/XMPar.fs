@@ -48,10 +48,10 @@ type token =
   | RETURN
   | VOID
   | WHILE
-  | FLOAT
+  | DOUBLE
   | CSTSTRING of (string)
   | NAME of (string)
-  | CSTFLOAT of (float)
+  | CSTDOUBLE of (double)
   | CSTCHAR of (char)
   | CSTINT of (int)
   | CSTBOOL of (int)
@@ -92,10 +92,10 @@ type tokenId =
     | TOKEN_RETURN
     | TOKEN_VOID
     | TOKEN_WHILE
-    | TOKEN_FLOAT
+    | TOKEN_DOUBLE
     | TOKEN_CSTSTRING
     | TOKEN_NAME
-    | TOKEN_CSTFLOAT
+    | TOKEN_CSTDOUBLE
     | TOKEN_CSTCHAR
     | TOKEN_CSTINT
     | TOKEN_CSTBOOL
@@ -125,7 +125,7 @@ type nonTerminalId =
     | NONTERM_Exprs1
     | NONTERM_ConstInt
     | NONTERM_ConstChar
-    | NONTERM_ConstFloat
+    | NONTERM_ConstDouble
     | NONTERM_Type
 
 // This function maps tokens to integer indexes
@@ -166,10 +166,10 @@ let tagOfToken (t:token) =
   | RETURN  -> 32 
   | VOID  -> 33 
   | WHILE  -> 34 
-  | FLOAT  -> 35 
+  | DOUBLE  -> 35 
   | CSTSTRING _ -> 36 
   | NAME _ -> 37 
-  | CSTFLOAT _ -> 38 
+  | CSTDOUBLE _ -> 38 
   | CSTCHAR _ -> 39 
   | CSTINT _ -> 40 
   | CSTBOOL _ -> 41 
@@ -212,10 +212,10 @@ let tokenTagToTokenId (tokenIdx:int) =
   | 32 -> TOKEN_RETURN 
   | 33 -> TOKEN_VOID 
   | 34 -> TOKEN_WHILE 
-  | 35 -> TOKEN_FLOAT 
+  | 35 -> TOKEN_DOUBLE 
   | 36 -> TOKEN_CSTSTRING 
   | 37 -> TOKEN_NAME 
-  | 38 -> TOKEN_CSTFLOAT 
+  | 38 -> TOKEN_CSTDOUBLE 
   | 39 -> TOKEN_CSTCHAR 
   | 40 -> TOKEN_CSTINT 
   | 41 -> TOKEN_CSTBOOL 
@@ -299,8 +299,8 @@ let prodIdxToNonTerminal (prodIdx:int) =
     | 70 -> NONTERM_ConstInt 
     | 71 -> NONTERM_ConstInt 
     | 72 -> NONTERM_ConstChar 
-    | 73 -> NONTERM_ConstFloat 
-    | 74 -> NONTERM_ConstFloat 
+    | 73 -> NONTERM_ConstDouble 
+    | 74 -> NONTERM_ConstDouble 
     | 75 -> NONTERM_Type 
     | 76 -> NONTERM_Type 
     | 77 -> NONTERM_Type 
@@ -347,10 +347,10 @@ let token_to_string (t:token) =
   | RETURN  -> "RETURN" 
   | VOID  -> "VOID" 
   | WHILE  -> "WHILE" 
-  | FLOAT  -> "FLOAT" 
+  | DOUBLE  -> "DOUBLE" 
   | CSTSTRING _ -> "CSTSTRING" 
   | NAME _ -> "NAME" 
-  | CSTFLOAT _ -> "CSTFLOAT" 
+  | CSTDOUBLE _ -> "CSTDOUBLE" 
   | CSTCHAR _ -> "CSTCHAR" 
   | CSTINT _ -> "CSTINT" 
   | CSTBOOL _ -> "CSTBOOL" 
@@ -393,10 +393,10 @@ let _fsyacc_dataOfToken (t:token) =
   | RETURN  -> (null : System.Object) 
   | VOID  -> (null : System.Object) 
   | WHILE  -> (null : System.Object) 
-  | FLOAT  -> (null : System.Object) 
+  | DOUBLE  -> (null : System.Object) 
   | CSTSTRING _fsyacc_x -> Microsoft.FSharp.Core.Operators.box _fsyacc_x 
   | NAME _fsyacc_x -> Microsoft.FSharp.Core.Operators.box _fsyacc_x 
-  | CSTFLOAT _fsyacc_x -> Microsoft.FSharp.Core.Operators.box _fsyacc_x 
+  | CSTDOUBLE _fsyacc_x -> Microsoft.FSharp.Core.Operators.box _fsyacc_x 
   | CSTCHAR _fsyacc_x -> Microsoft.FSharp.Core.Operators.box _fsyacc_x 
   | CSTINT _fsyacc_x -> Microsoft.FSharp.Core.Operators.box _fsyacc_x 
   | CSTBOOL _fsyacc_x -> Microsoft.FSharp.Core.Operators.box _fsyacc_x 
@@ -1044,12 +1044,12 @@ let _fsyacc_reductions ()  =    [|
                  : 'gentype_AtExprNotAccess));
 # 1045 "XMPar.fs"
         (fun (parseState : FSharp.Text.Parsing.IParseState) ->
-            let _1 = parseState.GetInput(1) :?> 'gentype_ConstFloat in
+            let _1 = parseState.GetInput(1) :?> 'gentype_ConstDouble in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
 # 140 "XMPar.fsy"
-                                                                CstFloat _1 
+                                                                CstDouble _1 
                    )
 # 140 "XMPar.fsy"
                  : 'gentype_AtExprNotAccess));
@@ -1242,7 +1242,7 @@ let _fsyacc_reductions ()  =    [|
                  : 'gentype_ConstChar));
 # 1243 "XMPar.fs"
         (fun (parseState : FSharp.Text.Parsing.IParseState) ->
-            let _1 = parseState.GetInput(1) :?> float in
+            let _1 = parseState.GetInput(1) :?> double in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
@@ -1250,10 +1250,10 @@ let _fsyacc_reductions ()  =    [|
                                                                 _1 
                    )
 # 176 "XMPar.fsy"
-                 : 'gentype_ConstFloat));
+                 : 'gentype_ConstDouble));
 # 1254 "XMPar.fs"
         (fun (parseState : FSharp.Text.Parsing.IParseState) ->
-            let _2 = parseState.GetInput(2) :?> float in
+            let _2 = parseState.GetInput(2) :?> double in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
@@ -1261,7 +1261,7 @@ let _fsyacc_reductions ()  =    [|
                                                                 - _2 
                    )
 # 177 "XMPar.fsy"
-                 : 'gentype_ConstFloat));
+                 : 'gentype_ConstDouble));
 # 1265 "XMPar.fs"
         (fun (parseState : FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
@@ -1288,7 +1288,7 @@ let _fsyacc_reductions ()  =    [|
                 (
                    (
 # 183 "XMPar.fsy"
-                                                                TypFloat 
+                                                                TypDouble 
                    )
 # 183 "XMPar.fsy"
                  : 'gentype_Type));

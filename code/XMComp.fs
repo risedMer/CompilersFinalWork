@@ -129,7 +129,7 @@ and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
            | "!" -> [ NOT ]
            | "printi" -> [ PRINTI ]
            | "printc" -> [ PRINTC ]
-           | "printf" -> [ PRINTF ]
+           | "printd" -> [ PRINTD ]
            | _ -> raise (Failure "unknown primitive 1")
            )
     | Prim2 (ope, e1, e2) ->

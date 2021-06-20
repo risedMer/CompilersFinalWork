@@ -19,7 +19,7 @@ let keyword s =
     | "return"  -> RETURN 
     | "void"    -> VOID
     | "while"   -> WHILE
-    | "float"   -> FLOAT
+    | "double"  -> DOUBLE
     | _         -> NAME s
 
 let cEscape s =
@@ -42,7 +42,7 @@ rule Token = parse
     | '\n'            { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Token lexbuf}
     | ['0'-'9']+      { CSTINT (System.Int32.Parse (lexemeAsString lexbuf)) }
     | ['0'-'9']+'.'['0'-'9']+
-                      { CSTFLOAT (System.Double.Parse (lexemeAsString lexbuf)) }
+                      { CSTDOUBLE (System.Double.Parse (lexemeAsString lexbuf)) }
     | ['_''a'-'z''A'-'Z']['a'-'z''A'-'Z''0'-'9']*
                       { keyword (lexemeAsString lexbuf) }
     | '+'             { PLUS }

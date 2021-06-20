@@ -92,8 +92,8 @@ let rec emitx86 instr =
     | CSTC i ->
         $";CSTC {i}\n\t\
                     push {i}\n\t"
-    | CSTF i ->
-        $";CSTF {i}\n\t\
+    | CSTD i ->
+        $";CSTD {i}\n\t\
                     push{i}\n\t"
     | GVAR i ->
         $";GVAR {i}\n\t\
@@ -237,8 +237,8 @@ let rec emitx86 instr =
                     call printc\n\t\
                     add rsp, 16\n\t\
                     "
-    | PRINTF ->
-        $";PRINTF\n\t
+    | PRINTD ->
+        $";PRINTD\n\t
                     pop {arg_loc 0}\n\t\
                     push {arg_loc 0}\n\t\
                     sub rsp, 16\n\t\
@@ -257,7 +257,7 @@ let rec emitx86 instr =
                     sub rcx, 1\n\t\
                     jmp _args_next      ;repeat until --ecx == 0\n\
                     _args_end:\n\t\
-                    lea rbp, [rsp-{m - 1}*8]  ; make rbp point to first arg\n\t"
+                    lea rbp, [rsp-{m - 1}*8]  ; make rbp point to Dirst arg\n\t"
     | STOP ->
         ";STOP\n\t\
                     mov rsp, qword [glovars]\n\t\

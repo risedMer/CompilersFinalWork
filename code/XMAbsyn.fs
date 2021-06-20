@@ -3,7 +3,7 @@ module XMAbsyn
 type typ =                          // 基本类型 Type
     | TypInt                        (* Type int                     *)
     | TypChar                       (* Type Char                    *)
-    | TypFloat                      (* Type Float       new         *)
+    | TypDouble                     (* Type Double      new         *)
     | TypArray of typ * int option  (* Type Array                   *)
     | TypPoint of typ               (* Type Pointer                 *)
 
@@ -13,7 +13,7 @@ and expr =                          // 表达式右值
     | Address of access             (* &x   or  &*p     or  &a[e]   *)
     | CstInt of int                 (* Constant int                 *)
     | CstChar of char               (* Constant char    new         *)
-    | CstFloat of float             (* Constant float   new         *)
+    | CstDouble of double           (* Constant double  new         *)
     | Prim1 of string * expr        (* Unary primitive operator     *)
     | Prim2 of string * expr * expr (* Binary primitive operator    *)
     | Andalso of expr * expr        (* Sequential and               *)

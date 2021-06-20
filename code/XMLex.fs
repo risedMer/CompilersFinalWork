@@ -21,7 +21,7 @@ let keyword s =
     | "return"  -> RETURN 
     | "void"    -> VOID
     | "while"   -> WHILE
-    | "float"   -> FLOAT
+    | "double"  -> DOUBLE
     | _         -> NAME s
 
 let cEscape s =
@@ -194,7 +194,7 @@ and Token  lexbuf =
           )
   | 3 -> ( 
 # 45 "XMLex.fsl"
-                                       CSTFLOAT (System.Double.Parse (lexemeAsString lexbuf)) 
+                                       CSTDOUBLE (System.Double.Parse (lexemeAsString lexbuf)) 
 # 198 "XMLex.fs"
           )
   | 4 -> ( 
