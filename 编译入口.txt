@@ -2,3 +2,5 @@
 #load "XMAbsyn.fs" "XMPar.fs" "XMLex.fs" "Debug.fs" "Parse.fs" "XMMachine.fs" "Backend.fs" "XMComp.fs" "ParseAndComp.fs";;
 open ParseAndComp;;
 compileToFile (fromFile "test\\test1.c") "output\\ex1";;
+
+./machine.exe ex1.out

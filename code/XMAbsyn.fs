@@ -33,16 +33,16 @@ and stmt =                          // 表达式功能
     | Expr of expr                  (* 表达式语句               e;   *)
     | Return of expr option         (* 从函数中返回                  *)
     | Block of stmtordec list       (* 语句块                        *)
-    | For of expr * stmt * stmt 
-    | In of expr
-    | Range of stmt
+
 and stmtordec =                     // 表达式或声明
     | Dec of typ * string           (* 本地变量声明                   *)
     | Stmt of stmt                  (* 表达式                         *)
+    | DecAndAssign of typ * string * expr
 
 and topdec =                                                        // 顶级声明
     | Fundec of typ option * string * (typ * string) list * stmt    (* 函数表达式            *)
     | Vardec of typ * string                                        (* 变量声明              *)
+    | VarDecAndAssign of typ * string * expr
 
 and program =                       // 程序：顶级声明的列表
     | Prog of topdec list

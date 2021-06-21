@@ -1,6 +1,7 @@
 int main() {
-	string x;
-	x = "hello world";
+	int x;
+	x = 5;
+	print x;
 //	for(x=0;x<5;x++) {
 //		print x;
 //	}

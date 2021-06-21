@@ -28,11 +28,10 @@ let isX86Instr = ref false
 let rec allocateWithMsg (kind: int -> Var) (typ, x) (varEnv: VarEnv) =
     let varEnv, instrs =
         allocate (kind: int -> Var) (typ, x) (varEnv: VarEnv)
-    
     msg
     <| "\nalloc\n"
-        + sprintf "%A\n" varEnv
-        + sprintf "%A\n" instrs
+       + sprintf "%A\n" varEnv
+       + sprintf "%A\n" instrs
 
     (varEnv, instrs)
 
@@ -42,15 +41,18 @@ and allocate (kind: int -> Var) (typ, x) (varEnv: VarEnv) : VarEnv * instr list 
     match typ with
     | TypArray (TypArray _, _) -> raise (Failure "allocate: array of arrays not permitted")
     | TypArray (t, Some i) ->
-        let newEnv = ((x, (kind (newloc + i), typ)) :: env, newloc + i + 1)
+        let newEnv =
+            ((x, (kind (newloc + i), typ)) :: env, newloc + i + 1) 
         let code = [ INCSP i; GETSP; OFFSET(i - 1); SUB ]
         (newEnv, code)
     | _ ->
-        let newEnv = ((x, (kind (newloc), typ)) :: env, newloc + 1)
+        let newEnv =
+            ((x, (kind (newloc), typ)) :: env, newloc + 1)
         let code = [ INCSP 1 ]
         (newEnv, code)
 
-let bindParam (env, newloc) (typ, x) : VarEnv = ((x, (Locvar newloc, typ)) :: env, newloc + 1)
+let bindParam (env, newloc) (typ, x) : VarEnv =
+    ((x, (Locvar newloc, typ)) :: env, newloc + 1)
 let bindParams paras ((env, newloc): VarEnv) : VarEnv = List.fold bindParam (env, newloc) paras
 
 let makeGlobalEnvs (topdecs: topdec list) : VarEnv * FunEnv * instr list =
@@ -71,109 +73,100 @@ let x86patch code =
     if !isX86Instr then
         code @ [ CSTI -8; MUL ]
     else
-        code
+        code 
 
-let rec cStmt stmt (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
+let rec xmStmt stmt (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
     match stmt with
     | If (e, stmt1, stmt2) ->
         let labelse = newLabel ()
         let labend = newLabel ()
-
-        cExpr e varEnv funEnv
+        xmExpr e varEnv funEnv
         @ [ IFZERO labelse ]
-            @ cStmt stmt1 varEnv funEnv
-                @ [ GOTO labend ]
-                    @ cStmt stmt2 varEnv funEnv
-                        @ [ Label labend ]
+          @ xmStmt stmt1 varEnv funEnv
+            @ [ GOTO labend ]
+              @ [ Label labelse ]
+                @ xmStmt stmt2 varEnv funEnv @ [ Label labend ]
     | While (e, body) ->
         let labbegin = newLabel ()
         let labtest = newLabel ()
-
         [ GOTO labtest; Label labbegin ]
-        @ cStmt body varEnv funEnv
-            @ [ Label labtest ]
-                @ cExpr e varEnv funEnv 
-                    @ [ IFNZRO labbegin ] 
-    | Expr e -> cExpr e varEnv funEnv @ [ INCSP -1 ]
+        @ xmStmt body varEnv funEnv
+          @ [ Label labtest ]
+            @ xmExpr e varEnv funEnv @ [ IFNZRO labbegin ]
+    | Expr e -> xmExpr e varEnv funEnv @ [ INCSP -1 ]
     | Block stmts ->
         let rec loop stmts varEnv =
             match stmts with
             | [] -> (snd varEnv, [])
             | s1 :: sr ->
-                let (varEnv1, code1) = cStmtOrDec s1 varEnv funEnv
+                let (varEnv1, code1) = xmStmtOrDec s1 varEnv funEnv
                 let (fdepthr, coder) = loop sr varEnv1
                 (fdepthr, code1 @ coder)
         let (fdepthend, code) = loop stmts varEnv
         code @ [ INCSP(snd varEnv - fdepthend) ]
     | Return None -> [ RET(snd varEnv - 1) ]
-    | Return (Some e) -> cExpr e varEnv funEnv @ [ RET(snd varEnv) ]
+    | Return (Some e) -> xmExpr e varEnv funEnv @ [ RET(snd varEnv) ]
 
-and cStmtOrDec stmtOrDec (varEnv: VarEnv) (funEnv: FunEnv) : VarEnv * instr list =
+and xmStmtOrDec stmtOrDec (varEnv: VarEnv) (funEnv: FunEnv) : VarEnv * instr list =
     match stmtOrDec with
-    | Stmt stmt -> (varEnv, cStmt stmt varEnv funEnv)
+    | Stmt stmt -> (varEnv, xmStmt stmt varEnv funEnv)
     | Dec (typ, x) -> allocateWithMsg Locvar (typ, x) varEnv
 
-and cExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
+and xmExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
     match e with
-    | Access acc -> cAccess acc varEnv funEnv @ [ LDI ]
+    | Access acc -> xmAccess acc varEnv funEnv @ [ LDI ]
     | Assign (acc, e) ->
-        cAccess acc varEnv funEnv
-        @ cExpr e varEnv funEnv @ [ STI ]
+        xmAccess acc varEnv funEnv
+        @ xmExpr e varEnv funEnv @ [ STI ]
     | CstInt i -> [ CSTI i ]
-    // | CstChar i -> [ CSTC i ]
-    // | CstFloat i -> [ CSTF i ]
-    | Address acc -> cAccess acc varEnv funEnv
+    | Address acc -> xmAccess acc varEnv funEnv
     | Prim1 (ope, e1) ->
-        cExpr e1 varEnv funEnv
+        xmExpr e1 varEnv funEnv
         @ (match ope with
            | "!" -> [ NOT ]
            | "printi" -> [ PRINTI ]
            | "printc" -> [ PRINTC ]
            | "printd" -> [ PRINTD ]
-           | _ -> raise (Failure "unknown primitive 1")
-           )
+           | _ -> raise (Failure "unknown primitive 1"))
     | Prim2 (ope, e1, e2) ->
-        cExpr e1 varEnv funEnv
-        @ cExpr e2 varEnv funEnv
-            @ (match ope with
-               | "+" -> [ ADD ]
-               | "-" -> [ SUB ]
-               | "*" -> [ MUL ]
-               | "/" -> [ DIV ]
-               | "%" -> [ MOD ]
-               | "==" -> [ EQ ]
-               | "!=" -> [ EQ; NOT ]
-               | "<" -> [ LT ]
-               | ">" -> [ SWAP; LT ]
-               | "<=" -> [ SWAP; LT; NOT]
-               | ">=" -> [ LT; NOT ]
-               | _ -> raise (Failure "unknown primitive 2")
-               )
+        xmExpr e1 varEnv funEnv
+        @ xmExpr e2 varEnv funEnv
+          @ (match ope with
+             | "*" -> [ MUL ]
+             | "+" -> [ ADD ]
+             | "-" -> [ SUB ]
+             | "/" -> [ DIV ]
+             | "%" -> [ MOD ]
+             | "==" -> [ EQ ]
+             | "!=" -> [ EQ; NOT ]
+             | "<" -> [ LT ]
+             | ">=" -> [ LT; NOT ]
+             | ">" -> [ SWAP; LT ]
+             | "<=" -> [ SWAP; LT; NOT ]
+             | _ -> raise (Failure "unknown primitive 2"))
     | Andalso (e1, e2) ->
         let labend = newLabel ()
         let labfalse = newLabel ()
-
-        cExpr e1 varEnv funEnv
+        xmExpr e1 varEnv funEnv
         @ [ IFZERO labfalse ]
-            @ cExpr e2 varEnv funEnv
-                @ [ GOTO labend
-                    Label labfalse
-                    CSTI 0
-                    Label labend ]
+          @ xmExpr e2 varEnv funEnv
+            @ [ GOTO labend
+                Label labfalse
+                CSTI 0
+                Label labend ]
     | Orelse (e1, e2) ->
         let labend = newLabel ()
         let labtrue = newLabel ()
-
-        cExpr e1 varEnv funEnv
+        xmExpr e1 varEnv funEnv
         @ [ IFNZRO labtrue ]
-            @ cExpr e2 varEnv funEnv
-                @ [ GOTO labend
-                    Label labtrue
-                    CSTI 1
-                    Label labend ]
+          @ xmExpr e2 varEnv funEnv
+            @ [ GOTO labend
+                Label labtrue
+                CSTI 1
+                Label labend ]
     | Call (f, es) -> callfun f es varEnv funEnv
 
-and cAccess access varEnv funEnv : instr list =
+and xmAccess access varEnv funEnv : instr list =
     match access with
     | AccVar x ->
         match lookup (fst varEnv) x with
@@ -185,36 +178,38 @@ and cAccess access varEnv funEnv : instr list =
         | Locvar addr, _ -> [ GETBP; OFFSET addr; ADD ]
     | AccDeref e ->
         match e with
-        | Access _ -> (cExpr e varEnv funEnv)
-        | Address _ -> (cExpr e varEnv funEnv)
-        | _ -> printfn "WARN: x86 pointer arithmetic not support!"
-               (cExpr e varEnv funEnv)
+        | Access _ -> (xmExpr e varEnv funEnv)
+        | Address _ -> (xmExpr e varEnv funEnv)
+        | _ ->
+            printfn "WARN: x86 pointer arithmetic not support!"
+            (xmExpr e varEnv funEnv)
     | AccIndex (acc, idx) ->
-        cAccess acc varEnv funEnv
+        xmAccess acc varEnv funEnv
         @ [ LDI ]
-            @ x86patch (cExpr idx varEnv funEnv) @ [ ADD ]
- 
-and cExprs es varEnv funEnv : instr list =
-    List.concat (List.map (fun e -> cExpr e varEnv funEnv) es)
+          @ x86patch (xmExpr idx varEnv funEnv) @ [ ADD ]
 
-and callfun f es varEnv funEnv : instr list = 
+ 
+and xmExprs es varEnv funEnv : instr list =
+    List.concat (List.map (fun e -> xmExpr e varEnv funEnv) es)
+
+and callfun f es varEnv funEnv : instr list =
     let (labf, tyOpt, paramdecs) = lookup funEnv f
     let argc = List.length es
     if argc = List.length paramdecs then
-        cExprs es varEnv funEnv @ [ CALL(argc, labf) ]
+        xmExprs es varEnv funEnv @ [ CALL(argc, labf) ]
     else
         raise (Failure(f + ": parameter/argument mismatch"))
  
 let argc = ref 0
 
-let cProgram (Prog topdecs) : instr list =
+let xmProgram (Prog topdecs) : instr list =
     let _ = resetLabels ()
     let ((globalVarEnv, _), funEnv, globalInit) = makeGlobalEnvs topdecs
     let compilefun (tyOpt, f, xs, body) =
         let (labf, _, paras) = lookup funEnv f
         let paraNums = List.length paras
         let (envf, fdepthf) = bindParams paras (globalVarEnv, 0)
-        let code = cStmt body (envf, fdepthf) funEnv
+        let code = xmStmt body (envf, fdepthf) funEnv
         [ FLabel (paraNums, labf) ]
         @ code @ [ RET(paraNums - 1) ]
     let functions =
@@ -223,15 +218,13 @@ let cProgram (Prog topdecs) : instr list =
             | Fundec (rTy, name, argTy, body) -> Some(compilefun (rTy, name, argTy, body))
             | Vardec _ -> None)
             topdecs
-
     let (mainlab, _, mainparams) = lookup funEnv "main"
     argc := List.length mainparams
-
     globalInit
     @ [ LDARGS !argc
         CALL(!argc, mainlab)
         STOP ]
-        @ List.concat functions
+      @ List.concat functions
 
 let intsToFile (inss: int list) (fname: string) =
     File.WriteAllText(fname, String.concat " " (List.map string inss))
@@ -239,37 +232,25 @@ let intsToFile (inss: int list) (fname: string) =
 let writeInstr fname instrs =
     let ins =
         String.concat "\n" (List.map string instrs)
-
     File.WriteAllText(fname, ins)
     printfn $"VM instructions saved in file:\n\t{fname}"
 
 let compileToFile program fname =
-
     msg <|sprintf "program:\n %A" program
-
-    let instrs = cProgram program
-
+    let instrs = xmProgram program
     msg <| sprintf "\nStack VM instrs:\n %A\n" instrs
-
     writeInstr (fname + ".ins") instrs
-
     let bytecode = code2ints instrs
     msg <| sprintf "Stack VM numeric code:\n %A\n" bytecode
-    
     isX86Instr := true
-    let x86instrs = cProgram program
+    let x86instrs = xmProgram program
     writeInstr (fname + ".insx86") x86instrs
-
     let x86asmlist = List.map emitx86 x86instrs
     let x86asmbody =
         List.fold (fun asm ins -> asm + ins) "" x86asmlist
-
     let x86asm =
         (x86header + beforeinit !argc + x86asmbody)
-
     printfn $"x86 assembly saved in file:\n\t{fname}.asm"
     File.WriteAllText(fname + ".asm", x86asm)
-
     intsToFile bytecode (fname + ".out")
-
     instrs
