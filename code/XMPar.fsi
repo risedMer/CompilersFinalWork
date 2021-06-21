@@ -37,6 +37,7 @@ type token =
   | VOID
   | WHILE
   | DOUBLE
+  | STRING
   | CSTSTRING of (string)
   | NAME of (string)
   | CSTDOUBLE of (double)
@@ -80,6 +81,7 @@ type tokenId =
     | TOKEN_VOID
     | TOKEN_WHILE
     | TOKEN_DOUBLE
+    | TOKEN_STRING
     | TOKEN_CSTSTRING
     | TOKEN_NAME
     | TOKEN_CSTDOUBLE
@@ -112,6 +114,7 @@ type nonTerminalId =
     | NONTERM_ConstInt
     | NONTERM_ConstChar
     | NONTERM_ConstDouble
+    | NONTERM_ConstString
     | NONTERM_Type
 /// This function maps tokens to integer indexes
 val tagOfToken: token -> int

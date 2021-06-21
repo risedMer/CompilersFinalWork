@@ -10,7 +10,7 @@ let nl = CstInt 10
 %token <double> CSTDOUBLE         // new 
 %token <string> CSTSTRING NAME
 
-%token CHAR IF ELSE INT NULL PRINT PRINTLN RETURN VOID WHILE DOUBLE
+%token CHAR IF ELSE INT NULL PRINT PRINTLN RETURN VOID WHILE DOUBLE STRING
 %token PLUS MINUS TIMES DIV MOD
 %token EQ NE GT LT GE LE  /* EQUAL | NOT EQUAL | GREATER THAN | LESS THAN | GREATER THAN OR EQUAL | LESS THAN OR EQUAL */
 %token NOT SEQOR SEQAND /* andalso orelse */
@@ -139,6 +139,7 @@ AtExprNotAccess:
       ConstInt                           { CstInt $1 }
     | ConstDouble                        { CstDouble $1 }
     | ConstChar                          { CstChar $1 }
+    | ConstString                        { CstString $1 }
     | LPAR ExprNotAccess RPAR            { $2 }
     | AMP Access                         { Address $2 }
 ;
@@ -177,8 +178,13 @@ ConstDouble:
     | MINUS CSTDOUBLE                    { - $2 }
 ;
 
+ConstString:
+      CSTSTRING                          { $1 }
+;
+
 Type:
       INT                                { TypInt }
     | CHAR                               { TypChar }
     | DOUBLE                             { TypDouble } // new
+    | STRING                             { TypString } // new
 ;

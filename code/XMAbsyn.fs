@@ -3,6 +3,7 @@ module XMAbsyn
 type typ =                          // 基本类型 Type
     | TypInt                        (* Type int                     *)
     | TypChar                       (* Type Char                    *)
+    | TypString                     (* Type String      new         *)
     | TypDouble                     (* Type Double      new         *)
     | TypArray of typ * int option  (* Type Array                   *)
     | TypPoint of typ               (* Type Pointer                 *)
@@ -14,6 +15,7 @@ and expr =                          // 表达式右值
     | CstInt of int                 (* Constant int                 *)
     | CstChar of char               (* Constant char    new         *)
     | CstDouble of double           (* Constant double  new         *)
+    | CstString of string           (* Constant string  new         *)
     | Prim1 of string * expr        (* Unary primitive operator     *)
     | Prim2 of string * expr * expr (* Binary primitive operator    *)
     | Andalso of expr * expr        (* Sequential and               *)
@@ -31,7 +33,9 @@ and stmt =                          // 表达式功能
     | Expr of expr                  (* 表达式语句               e;   *)
     | Return of expr option         (* 从函数中返回                  *)
     | Block of stmtordec list       (* 语句块                        *)
-
+    | For of expr * stmt * stmt 
+    | In of expr
+    | Range of stmt
 and stmtordec =                     // 表达式或声明
     | Dec of typ * string           (* 本地变量声明                   *)
     | Stmt of stmt                  (* 表达式                         *)
