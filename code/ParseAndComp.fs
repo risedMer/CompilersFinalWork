@@ -4,4 +4,4 @@ let fromString = Parse.fromString
 
 let fromFile = Parse.fromFile
 
-let compileToFile = Comp.compileToFile
+let compileToFile = XMComp.compileToFile

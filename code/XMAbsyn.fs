@@ -3,7 +3,8 @@ module XMAbsyn
 type typ =                          // 基本类型 Type
     | TypInt                        (* Type int                     *)
     | TypChar                       (* Type Char                    *)
-    | TypFloat                      (* Type Float       new         *)
+    | TypString                     (* Type String      new         *)
+    | TypDouble                     (* Type Double      new         *)
     | TypArray of typ * int option  (* Type Array                   *)
     | TypPoint of typ               (* Type Pointer                 *)
 
@@ -13,7 +14,13 @@ and expr =                          // 表达式右值
     | Address of access             (* &x   or  &*p     or  &a[e]   *)
     | CstInt of int                 (* Constant int                 *)
     | CstChar of char               (* Constant char    new         *)
-    | CstFloat of float32           (* Constant float   new         *)
+    | CstDouble of double           (* Constant double  new         *)
+    | CstString of string           (* Constant string  new         *)
+    | Prim1 of string * expr        (* Unary primitive operator     *)
+    | Prim2 of string * expr * expr (* Binary primitive operator    *)
+    | Andalso of expr * expr        (* Sequential and               *)
+    | Orelse of expr * expr         (* Sequential or                *)
+    | Call of string * expr list    (* Function call f(...)         *)
 
 and access =                        // 左值存储的位置
     | AccVar of string              (* Variable access        x     *)
@@ -30,10 +37,12 @@ and stmt =                          // 表达式功能
 and stmtordec =                     // 表达式或声明
     | Dec of typ * string           (* 本地变量声明                   *)
     | Stmt of stmt                  (* 表达式                         *)
+    | DecAndAssign of typ * string * expr
 
 and topdec =                                                        // 顶级声明
     | Fundec of typ option * string * (typ * string) list * stmt    (* 函数表达式            *)
     | Vardec of typ * string                                        (* 变量声明              *)
+    | VarDecAndAssign of typ * string * expr
 
 and program =                       // 程序：顶级声明的列表
     | Prog of topdec list

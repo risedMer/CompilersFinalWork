@@ -1,32 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
-    </PropertyGroup>
-    <ItemGroup>
-        <FsLex Include="XMLex.fsl">
-            <OtherFlags>--module XMLex --unicode</OtherFlags>
-        </FsLex>
-        <FsYacc Include="XMPar.fsy">
-            <OtherFlags>--module XMPar</OtherFlags>
-        </FsYacc>
-        <Compile Include="XMAbsyn.fs"/>
-        <Compile Include="Debug.fs" />
-        <Compile Include="XMPar.fs" />
-        <Compile Include="XMLex.fs" />
-        <Compile Include="Parse.fs" />
-        <!-- <Compile Include="Machine.fs" /> -->
-        <!-- <Compile Include="Backend.fs" /> -->
-        <!-- <Compile Include="Comp.fs" /> -->
-        <!-- <Compile Include="XM.fs" /> -->
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="FsLexYacc" Version="10.2.0"/>
-    </ItemGroup>
-    <!-- <ItemGroup> -->
-        <!-- <MyItem Include="" Args=""/> --> <!-- 测试代码 -->
-    <!-- </ItemGroup> -->
-    <!-- <Target Name="XMrun">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <FsLex Include="XMLex.fsl">
+      <OtherFlags>--module XMLex --unicode</OtherFlags>
+    </FsLex>
+    <FsYacc Include="XMPar.fsy">
+      <OtherFlags>--module XMPar</OtherFlags>
+    </FsYacc>
+    <Compile Include="XMAbsyn.fs" />
+    <Compile Include="Debug.fs" />
+    <Compile Include="XMPar.fs" />
+    <Compile Include="XMLex.fs" />
+    <Compile Include="Parse.fs" />
+    <Compile Include="XMMachine.fs" />
+    <Compile Include="Backend.fs" />
+    <Compile Include="XMComp.fs" />
+    <Compile Include="XM.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
+  </ItemGroup>
+  <!-- <ItemGroup> -->
+  <!-- <MyItem Include="" Args=""/> -->
+  <!-- 测试代码 -->
+  <!-- </ItemGroup> -->
+  <!-- <Target Name="XMrun">
         <Exec Command="
         echo -\-\-\-\-\-\-\-\-\-\-compile-\-\-\-\-\-\-\-\-\-\-
         dotnet run -p ./XM.fsproj -g %(MyItem.RelativeDir)%(MyItem.FileName).c
@@ -37,7 +38,7 @@
         rem machine.exe -trace %(MyItem.RelativeDir)%(MyItem.FileName).out %(MyItem.Args)
         " />
     </Target> -->
-    <!-- <Target Name="XMrunx86">
+  <!-- <Target Name="XMrunx86">
         <Exec Command="
         echo -\-\-\-\-\-\-\-\-\-\-compile-\-\-\-\-\-\-\-\-\-\-
         dotnet run -p ./XM.fsproj %(MyItem.RelativeDir)%(MyItem.FileName).c
@@ -51,10 +52,10 @@
         %(MyItem.RelativeDir)%(MyItem.FileName).exe %(MyItem.Args)
         " />
     </Target> -->
-    <!-- <ItemGroup> -->
-        <!-- <CleanDir Include=""/> -->
-    <!-- </ItemGroup> -->
-    <!-- <Target Name="XMclean">
+  <!-- <ItemGroup> -->
+  <!-- <CleanDir Include=""/> -->
+  <!-- </ItemGroup> -->
+  <!-- <Target Name="XMclean">
         <Exec Command="
         echo -\-\-\-\-\-\-\-\-\-\-clean-\-\-\-\-\-\-\-\-\-\-
         del %(CleanDir.RelativeDir)*.ins %(CleanDir.RelativeDir)*.insx86 %(CleanDir.RelativeDir)*.out %(CleanDir.RelativeDir)*.asm %(CleanDir.RelativeDir)*.o %(CleanDir.RelativeDir)*.obj %(CleanDir.RelativeDir)*.exe

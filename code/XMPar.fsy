@@ -1,0 +1,205 @@
+%{
+open XMAbsyn
+
+let compose1 f (g,s) = ((fun x -> g(f(x))),s)
+let nl = CstInt 10
+
+let frt (a, _, _) = a
+let sed (_, b, _) = b
+let trd (_, _, c) = c
+
+%}
+
+%token <int> CSTINT CSTBOOL
+%token <char> CSTCHAR           // new
+%token <double> CSTDOUBLE         // new 
+%token <string> CSTSTRING NAME
+
+%token CHAR IF ELSE INT NULL PRINT PRINTLN RETURN VOID WHILE DOUBLE STRING
+// 运算符
+%token PLUS MINUS TIMES DIV MOD
+// 各种比较符
+%token EQ NE GT LT GE LE  /* EQUAL | NOT EQUAL | GREATER THAN | LESS THAN | GREATER THAN OR EQUAL | LESS THAN OR EQUAL */
+%token NOT SEQOR SEQAND /* andalso orelse */
+// 各种符号
+%token LPAR RPAR /* 左右圆括号 */ LBRACE RBRACE /* 左右花括号 */ LBRACK RBRACK /* 左右方括号 */ SEMI /* 分号 */ COMMA /* 逗号 */ ASSIGN AMP /* 获取指针指向地址 & */
+%token EOF
+
+%right ASSIGN
+%nonassoc PRINT
+%left SEQOR
+%left SEQAND
+%left EQ NE
+%nonassoc GT LT GE LE
+%left PLUS MINUS
+%left TIMES DIV MOD
+%nonassoc NOT AMP
+%nonassoc LBRACK
+
+%start Main
+%type <XMAbsyn.program> Main
+
+%%
+
+Main:
+    Topdecs EOF                     { Prog $1 }
+;
+
+Topdecs:
+                                    { [] }
+    | Topdec Topdecs                { $1 :: $2 }
+;
+
+Topdec:
+      Vardec SEMI                   { Vardec (fst $1, snd $1) }
+    | Fundec                        { $1 }
+    | VarDecAndAssign SEMI          { VarDecAndAssign(frt $1, sed $1, trd $1) }
+;
+
+Vardec:
+    Type Vardesc                    { ((fst $2) $1, snd $2) }
+;
+
+VarDecAndAssign:
+    Type Vardesc ASSIGN Expr         { ((fst $2) $1, snd $2, $4) }
+;
+
+Vardesc:
+      NAME                          { ((fun t -> t), $1) }
+    | TIMES Vardesc                 { compose1 TypPoint $2 }
+    | LPAR Vardesc RPAR             { $2 }
+    | Vardesc LBRACK RBRACK         { compose1 (fun t -> TypArray(t, None)) $1 }
+    | Vardesc LBRACK CSTINT RBRACK  { compose1 (fun t -> TypArray(t, Some $3)) $1 }
+;
+
+// 函数定义表达式
+Fundec:
+      VOID NAME LPAR Paramdecs RPAR Block { Fundec(None, $2, $4, $6) }
+    | Type NAME LPAR Paramdecs RPAR Block { Fundec(Some($1), $2, $4, $6) }
+;
+// 参数列表
+Paramdecs:
+                                    { [] }
+    | Paramdecs1                    { $1 }
+;
+
+Paramdecs1:
+      Vardec                        { [$1] }
+    | Vardec COMMA Paramdecs1       { $1 :: $3 }
+;
+
+Block:
+      LBRACE StmtOrDecSeq RBRACE    { Block $2 }
+;
+
+// 表达式或声明序列?
+StmtOrDecSeq:
+                                    { [] }
+    | Stmt StmtOrDecSeq             { Stmt $1 :: $2 }
+    | Vardec SEMI StmtOrDecSeq      { Dec (fst $1, snd $1) :: $3 }
+    | VarDecAndAssign SEMI StmtOrDecSeq { DecAndAssign(frt $1, sed $1, trd $1) :: $3 }
+;
+
+Stmt:
+      StmtM                         { $1 }
+    | StmtU                         { $1 }
+;
+
+// 定义了 return; | return a; | {} | if(){} else{} | while(){}
+// 自定义
+StmtM:
+      Expr SEMI                          { Expr($1) }
+    | RETURN SEMI                        { Return None }
+    | RETURN Expr SEMI                   { Return(Some($2)) }
+    | Block                              { $1 }
+    | IF LPAR Expr RPAR StmtM ELSE StmtM { If($3, $5, $7) }
+    | WHILE LPAR Expr RPAR StmtM         { While($3, $5) }
+;
+
+StmtU:
+      IF LPAR Expr RPAR StmtM ELSE StmtU { If($3, $5, $7) }
+    | IF LPAR Expr RPAR Stmt             { If($3, $5, Block []) }
+    | WHILE LPAR Expr RPAR StmtU         { While($3, $5) }
+;
+
+Expr:
+      Access                             { Access $1 }
+    | ExprNotAccess                      { $1 }
+;
+
+ExprNotAccess:
+      AtExprNotAccess                    { $1 }
+    | Access ASSIGN Expr                 { Assign($1, $3) } // 1 = a
+    | NAME LPAR Exprs RPAR               { Call($1, $3) }
+    | NOT Expr                           { Prim1("!", $2) }
+    | PRINT Expr                         { Prim1("printi", $2) }
+    | PRINTLN                            { Prim1("printc", nl) }
+    | Expr PLUS Expr                     { Prim2("+", $1, $3) }
+    | Expr MINUS Expr                    { Prim2("-", $1, $3) }
+    | Expr TIMES Expr                    { Prim2("*", $1, $3) }
+    | Expr DIV Expr                      { Prim2("/", $1, $3) }
+    | Expr MOD Expr                      { Prim2("%", $1, $3) }
+    | Expr EQ Expr                       { Prim2("==", $1, $3) }
+    | Expr NE Expr                       { Prim2("!=", $1, $3) }
+    | Expr GT Expr                       { Prim2(">", $1, $3) }
+    | Expr LT Expr                       { Prim2("<", $1, $3) }
+    | Expr GE Expr                       { Prim2(">=", $1, $3) }
+    | Expr LE Expr                       { Prim2("<=", $1, $3) }
+    | Expr SEQAND Expr                   { Andalso($1, $3) }
+    | Expr SEQOR Expr                    { Orelse($1, $3) }
+;
+
+// 常数、地址、被括号包围的值不能为左值
+AtExprNotAccess:
+      ConstInt                           { CstInt $1 }
+    | ConstDouble                        { CstDouble $1 }
+    | ConstChar                          { CstChar $1 }
+    | ConstString                        { CstString $1 }
+    | LPAR ExprNotAccess RPAR            { $2 }
+    | AMP Access                         { Address $2 }
+;
+
+Access:                                  // 可为左值的情况
+      NAME                               { AccVar $1 }
+    | LPAR Access RPAR                   { $2 }
+    | TIMES Access                       { AccDeref (Access $2) }
+    | TIMES AtExprNotAccess              { AccDeref $2 }
+    | Access LBRACK Expr RBRACK          { AccIndex($1, $3) }
+;
+
+Exprs:
+                                         { [] }
+    | Exprs1                             { $1 }
+;
+
+Exprs1:
+      Expr                               { [$1] }
+    | Expr COMMA Exprs1                  { $1 :: $3 }
+;
+
+ConstInt:
+      CSTINT                             { $1 }
+    | CSTBOOL                            { $1 }
+    | MINUS CSTINT                       { - $2 }
+    | NULL                               { -1 }
+;
+
+ConstChar:
+      CSTCHAR                            { $1 }
+;
+
+ConstDouble:
+      CSTDOUBLE                          { $1 }
+    | MINUS CSTDOUBLE                    { - $2 }
+;
+
+ConstString:
+      CSTSTRING                          { $1 }
+;
+
+Type:
+      INT                                { TypInt }
+    | CHAR                               { TypChar }
+    | DOUBLE                             { TypDouble } // new
+    | STRING                             { TypString } // new
+;
