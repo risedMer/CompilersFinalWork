@@ -11,7 +11,7 @@ let _ =
     if args.Length > 1 then
         let source = args.[1]
         let stem = 
-            if source.EndsWith(".xm")
+            if source.EndsWith(".c")
                 then source.Substring(0,source.Length - 2)
                 else source
         let target = stem + ".out"

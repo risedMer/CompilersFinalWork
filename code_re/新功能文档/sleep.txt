@@ -1,0 +1,6 @@
+1. XMAbsyn.fs stmt加入Sleep
+2. XMPar.fsy %token加入SLEEP
+3. XMPar.fsy StmtM、StmtU中加入 SLEEP
+4. XMLex.fsl keyword中加入 SLEEP
+5. XMMachine.fs instr 加入 SLEEP
+6. XMMachine.fs [<Literal>]中加入 CODESLEEP

@@ -55,10 +55,6 @@ let bindParam (env, newloc) (typ, x) : VarEnv =
     ((x, (Locvar newloc, typ)) :: env, newloc + 1)
 let bindParams paras ((env, newloc): VarEnv) : VarEnv = List.fold bindParam (env, newloc) paras
 
-let rec addCSTD i c =
-    match (i, c) with
-    | _ -> (CSTD (System.BitConverter.ToInt32(System.BitConverter.GetBytes(double(i)), 0))) :: c
-
 let makeGlobalEnvs (topdecs: topdec list) : VarEnv * FunEnv * instr list =
     let rec addv decs varEnv funEnv =
         msg $"\nGlobal funEnv:\n{funEnv}\n"
@@ -115,10 +111,6 @@ and xmStmtOrDec stmtOrDec (varEnv: VarEnv) (funEnv: FunEnv) : VarEnv * instr lis
     match stmtOrDec with
     | Stmt stmt -> (varEnv, xmStmt stmt varEnv funEnv)
     | Dec (typ, x) -> allocateWithMsg Locvar (typ, x) varEnv
-
-and xmDouble (e : expr) (varEnv: VarEnv) (funEnv: FunEnv) (c: instr list) : instr list =
-    match e with
-    | CstDouble i -> addCSTD i c
 
 and xmExpr (e: expr) (varEnv: VarEnv) (funEnv: FunEnv) : instr list =
     match e with
