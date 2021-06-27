@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "+5n15rwq8cyozNQL0VKZTHtaYHg5CmbEQkXd4wla3YXjnVJCOenJ1jZvJ6n6bSTQs01/uJOy3wtE1RQrq4fWOA==",
+  "success": true,
+  "projectFilePath": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\XM.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ZTY\\.nuget\\packages\\fsharp.core\\5.0.0\\fsharp.core.5.0.0.nupkg.sha512",
+    "C:\\Users\\ZTY\\.nuget\\packages\\fslexyacc\\10.2.0\\fslexyacc.10.2.0.nupkg.sha512",
+    "C:\\Users\\ZTY\\.nuget\\packages\\fslexyacc.runtime\\10.2.0\\fslexyacc.runtime.10.2.0.nupkg.sha512"
+  ],
+  "logs": []
+}

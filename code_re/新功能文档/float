@@ -1,0 +1,5 @@
+1. XMAbsyn.fs typ加入 TypF expr加入CstF
+2. XMPar.fsy token加入<float32> CSTFLOAT
+3. XMPar.fsy Type加入FLOAT
+4. XMLex.fsl keyword加入float Token加入规则
+5. 

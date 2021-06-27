@@ -5,22 +5,20 @@ open XMPar
 let lexemeAsString lexbuf = 
     LexBuffer<char>.LexemeString lexbuf
 
-let keyword s =
+let keyword s =   
     match s with
     | "char"    -> CHAR
-    | "if"      -> IF
     | "else"    -> ELSE
-    | "false"   -> CSTBOOL 0
     | "true"    -> CSTBOOL 1
+    | "false"   -> CSTBOOL 0
+    | "if"      -> IF
     | "int"     -> INT
-    | "null"    -> NULL 
+    | "null"    -> NULL
     | "print"   -> PRINT
-    | "println" -> PRINTLN 
-    | "return"  -> RETURN 
+    | "println" -> PRINTLN
+    | "return"  -> RETURN
     | "void"    -> VOID
     | "while"   -> WHILE
-    | "double"  -> DOUBLE
-    | "string"  -> STRING
     | _         -> NAME s
 
 let cEscape s =
@@ -42,12 +40,9 @@ rule Token = parse
     | [' ' '\t' '\r'] { Token lexbuf }
     | '\n'            { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Token lexbuf}
     | ['0'-'9']+      { CSTINT (System.Int32.Parse (lexemeAsString lexbuf)) }
-    | ['0'-'9']+'.'['0'-'9']+
-                      { CSTDOUBLE (System.Double.Parse (lexemeAsString lexbuf)) }
-    | ['\"']['a'-'z''A'-'Z''0'-'9']['\"']
-                      { try let single = lexemeAsString lexbuf in CSTCHAR (System.Char.Parse(single.Substring(1,1))) with ex -> failwith "Char literal error." }
     | ['_''a'-'z''A'-'Z']['a'-'z''A'-'Z''0'-'9']*
                       { keyword (lexemeAsString lexbuf) }
+    | ['0']+['x''X']+['0'-'9''a'-'f''A'-'F']
     | '+'             { PLUS }
     | '-'             { MINUS }
     | '*'             { TIMES }
@@ -73,7 +68,7 @@ rule Token = parse
     | ';'             { SEMI }
     | ','             { COMMA }
     | "//"            { EndLineComment lexbuf; Token lexbuf }
-    | "/*"            { Comment lexbuf; Token lexbuf}
+    | "/*"            { Comment lexbuf; Token lexbuf}           // 多行注释调用comment规则
     | '"'             { CSTSTRING (String [] lexbuf) }
     | eof             { EOF }
     | _               { failwith "Lexer error: illegal symbol" }

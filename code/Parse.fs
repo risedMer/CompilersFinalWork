@@ -28,7 +28,7 @@ let fromFile (filename : string) =
     try 
       msg "\nToken:\n"
       
-      //CPar.Main  语法分析主程序 
+      //XMPar.Main  语法分析主程序 
       let ast = XMPar.Main token lexbuf in
         msg "\nAST:\n";
         ast

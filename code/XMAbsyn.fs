@@ -37,12 +37,10 @@ and stmt =                          // 表达式功能
 and stmtordec =                     // 表达式或声明
     | Dec of typ * string           (* 本地变量声明                   *)
     | Stmt of stmt                  (* 表达式                         *)
-    | DecAndAssign of typ * string * expr
 
 and topdec =                                                        // 顶级声明
     | Fundec of typ option * string * (typ * string) list * stmt    (* 函数表达式            *)
     | Vardec of typ * string                                        (* 变量声明              *)
-    | VarDecAndAssign of typ * string * expr
 
 and program =                       // 程序：顶级声明的列表
     | Prog of topdec list

@@ -1,6 +1,11 @@
 #r "nuget: FsLexYacc";;
-#load "XMAbsyn.fs" "XMPar.fs" "XMLex.fs" "Debug.fs" "Parse.fs" "XMMachine.fs" "Backend.fs" "XMComp.fs" "ParseAndComp.fs";;
+#load "XMAbsyn.fs" "XMPar.fs" "XMLex.fs" "Debug.fs" "Parse.fs" "XMMachine.fs" "Backend.fs" "XMContcomp.fs" "ParseAndComp.fs";;
 open ParseAndComp;;
+Debug.debug <-  true;;
 compileToFile (fromFile "test\\test1.c") "output\\ex1";;
 
-./machine.exe ex1.out
+compileToFile (fromFile "test\\float.c") "output\\float";;
+
+compileToFile (fromFile "test\\sleep.c") "output\\sleep";;
+
+java Machine test1.out 10
