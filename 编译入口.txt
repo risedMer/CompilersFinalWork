@@ -8,4 +8,6 @@ compileToFile (fromFile "test\\float.c") "output\\float";;
 
 compileToFile (fromFile "test\\sleep.c") "output\\sleep";;
 
+compileToFile (fromFile "test\\annotation.c") "output\\annotation";;
+
 java Machine test1.out 10

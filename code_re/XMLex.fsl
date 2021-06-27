@@ -45,7 +45,7 @@ rule Token = parse
   | [' ' '\t' '\r']                             { Token lexbuf } 
   | '\n'                                        { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Token lexbuf } // 换行处理 EndPos 是内置类型 Position的实例，表示当前行的结束位置
   | ['0'-'9']+                                  { CSTINT (System.Int32.Parse (lexemeAsString lexbuf)) }
-  | ['0'-'9']+'.'['0'-'9']+                     { CSTFLOAT (System.Single.Parse (lexemeAsString lexbuf))}
+  | ['0'-'9']+'.'['0'-'9']+                     { CSTFLOAT (System.Single.Parse (lexemeAsString lexbuf)) }
   | ['a'-'z''A'-'Z']['a'-'z''A'-'Z''0'-'9']*    { keyword (lexemeAsString lexbuf) }
   | '+'                                         { PLUS }
   | '-'                                         { MINUS } 
@@ -73,6 +73,8 @@ rule Token = parse
   | ','                                         { COMMA }
   | "//"                                        { EndLineComment lexbuf; Token lexbuf }  //单行注释处理规则，调用响应处理函数 参数是 lexbuf 处理完后 lexbuf 内容已经更新，注释部分过滤 调用 Token 规则函数继续注释部分后面的处理
   | "/*"            { Comment lexbuf; Token lexbuf }   // 多行注释，调用 Comment规则
+  | "(*"            { Comment2 lexbuf; Token lexbuf }   // (**) 注释
+  | "<!--"          { Comment3 lexbuf; Token lexbuf }   // <!-- -->注释
   | '"'             { CSTSTRING (String [] lexbuf) }   // 调用字符串处理规则
   | eof             { EOF }
   | _               { failwith "Lexer error: illegal symbol" }
@@ -83,6 +85,20 @@ and Comment = parse
    | '\n'           { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Comment lexbuf } //注释跨行处理
    | (eof | '\026') { failwith "Lexer error: unterminated comment" }  // 多行注释未封闭
    | _              { Comment lexbuf }  // 其他任意情况都继续处理后续字符
+
+and Comment2 = parse
+   | "(*"           { Comment2 lexbuf; Comment2 lexbuf }
+   | "*)"           { () }
+   | '\n'           { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Comment2 lexbuf }
+   | (eof | '\026') { failwith "Lexer error: unterminated comment" }
+   | _              { Comment2 lexbuf }
+
+and Comment3 = parse
+   | "<!--"         { Comment3 lexbuf; Comment3 lexbuf }
+   | "-->"          { () }
+   | '\n'           { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Comment3 lexbuf }
+   | (eof | '\026') { failwith "Lexer error: unterminated comment" }
+   | _              { Comment3 lexbuf }
 
 and EndLineComment = parse
    | '\n'           { lexbuf.EndPos <- lexbuf.EndPos.NextLine }  //更新行尾位置，返回
