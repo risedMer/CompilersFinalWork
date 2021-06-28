@@ -114,7 +114,8 @@ type VarEnv = (Var * typ) Env * int
 
 type Paramdecs = (typ * string) list
 type FunEnv = (label * typ option * Paramdecs) Env
-
+type StructEnv = (string * (Var * typ) Env * int) list
+type LabEnv = label list
 (* Bind declared variable in varEnv and generate code to allocate it: *)
 
 let allocate (kind : int -> Var) (typ, x) (varEnv : VarEnv) : VarEnv * instr list =
@@ -178,6 +179,16 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
       let (jumptest, C1) = 
            makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: C))
       addJump jumptest (Label labbegin :: cStmt body varEnv funEnv C1)
+    | DoWhile(body, e) ->
+      let labbegin = newLabel()
+      let (jumptest, C1) =
+           makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: C))
+      addJump jumptest (Label labbegin :: cStmt body varEnv funEnv C1)
+    // | DoWhile(stmt, expr) ->
+    //   let labbegin = newLabel()
+    //   let (jumptest, C1) = 
+    //        makeJump (cExpr expr varEnv funEnv (IFNZRO labbegin :: C))
+    //   addJump jumptest (Label labbegin :: cStmt stmt varEnv funEnv C1)
     | Expr e -> 
       cExpr e varEnv funEnv (addINCSP -1 C) 
     | Block stmts -> 
@@ -199,8 +210,6 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
       RET (snd varEnv - 1) :: deadcode C
     | Return (Some e) -> 
       cExpr e varEnv funEnv (RET (snd varEnv) :: deadcode C)
-    // | Sleep e ->
-    //   cExpr e varEnv funEnv (SLEEP (snd varEnv) :: deadcode C)
 
 and bStmtordec stmtOrDec varEnv : bstmtordec * VarEnv =
     match stmtOrDec with 

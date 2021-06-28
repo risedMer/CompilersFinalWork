@@ -1,7 +1,6 @@
 module XMLex
 # 1 "XMLex.fsl"
  
-
 open FSharp.Text.Lexing
 open XMPar
 
@@ -25,6 +24,7 @@ let keyword s =
     | "true"    -> CSTBOOL 1
     | "void"    -> VOID 
     | "while"   -> WHILE
+    | "do"      -> DO
     | "sleep"   -> SLEEP
     | _         -> NAME s
 

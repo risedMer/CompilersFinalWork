@@ -36,6 +36,7 @@ type token =
   | RETURN
   | VOID
   | WHILE
+  | DO
   | FLOAT
   | SLEEP
   | CSTFLOAT of (float32)
@@ -79,6 +80,7 @@ type tokenId =
     | TOKEN_RETURN
     | TOKEN_VOID
     | TOKEN_WHILE
+    | TOKEN_DO
     | TOKEN_FLOAT
     | TOKEN_SLEEP
     | TOKEN_CSTFLOAT
