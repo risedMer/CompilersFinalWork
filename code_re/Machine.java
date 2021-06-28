@@ -46,7 +46,7 @@ class Machine {
       case CSTI:
         s[sp+1] = p[pc++]; sp++; break;
       case ADD: 
-        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) == 1) {
+        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) != -1) {
           s[sp-1] = Float.parseFloat(String.valueOf(s[sp-1])) + Float.parseFloat(String.valueOf(s[sp])); sp--; 
         }
         else {
@@ -55,7 +55,7 @@ class Machine {
         // s[sp-1] = Integer.parseInt(String.valueOf(s[sp-1])) + Integer.parseInt(String.valueOf(s[sp])); sp--;
         break;
       case SUB:
-        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) == 1) {
+        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) != -1) {
           s[sp-1] = Float.parseFloat(String.valueOf(s[sp-1])) - Float.parseFloat(String.valueOf(s[sp])); sp--;
         }
         else {
@@ -64,7 +64,7 @@ class Machine {
         // s[sp-1] = Integer.parseInt(String.valueOf(s[sp-1])) - Integer.parseInt(String.valueOf(s[sp])); sp--; 
         break;
       case MUL:
-        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) == 1) {
+        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) != -1) {
           s[sp-1] = Float.parseFloat(String.valueOf(s[sp-1])) * Float.parseFloat(String.valueOf(s[sp])); sp--;
         }
         else {
@@ -73,7 +73,7 @@ class Machine {
         // s[sp-1] = Integer.parseInt(String.valueOf(s[sp-1])) * Integer.parseInt(String.valueOf(s[sp])); sp--; 
         break;
       case DIV: 
-        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) == 1) {
+        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) != -1) {
           s[sp-1] = Float.parseFloat(String.valueOf(s[sp-1])) / Float.parseFloat(String.valueOf(s[sp])); sp--;
         }
         else {
@@ -83,12 +83,31 @@ class Machine {
         break;
       case MOD: 
         s[sp-1] = Integer.parseInt(String.valueOf(s[sp-1])) % Integer.parseInt(String.valueOf(s[sp])); sp--; break;
-      case EQ: 
-        s[sp-1] = (Integer.parseInt(String.valueOf(s[sp-1])) == Integer.parseInt(String.valueOf(s[sp])) ? 1 : 0); sp--; break;
-      case LT: 
-        s[sp-1] = (Integer.parseInt(String.valueOf(s[sp-1])) < Integer.parseInt(String.valueOf(s[sp])) ? 1 : 0); sp--; break;
+      case EQ:
+        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) != -1) {
+          s[sp-1] = (Float.parseFloat(String.valueOf(s[sp-1])) == Float.parseFloat(String.valueOf(s[sp])) ? 1 : 0); sp--; 
+        }
+        else {
+          s[sp-1] = (Integer.parseInt(String.valueOf(s[sp-1])) == Integer.parseInt(String.valueOf(s[sp])) ? 1 : 0); sp--; 
+        }
+          // s[sp-1] = (Integer.parseInt(String.valueOf(s[sp-1])) == Integer.parseInt(String.valueOf(s[sp])) ? 1 : 0); sp--; 
+        break;
+      case LT:
+        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) != -1) { 
+          s[sp-1] = (Float.parseFloat(String.valueOf(s[sp-1])) < Float.parseFloat(String.valueOf(s[sp])) ? 1 : 0); sp--;
+        }
+        else {
+          s[sp-1] = (Integer.parseInt(String.valueOf(s[sp-1])) < Integer.parseInt(String.valueOf(s[sp])) ? 1 : 0); sp--;
+        }
+          // s[sp-1] = (Integer.parseInt(String.valueOf(s[sp-1])) < Integer.parseInt(String.valueOf(s[sp])) ? 1 : 0); sp--; 
+        break;
       case NOT: 
-        s[sp] = (Integer.parseInt(String.valueOf(s[sp])) == 0 ? 1 : 0); break;
+        if((String.valueOf(s[sp-1])).indexOf(String.valueOf(".")) != -1) 
+          s[sp] = (Float.parseFloat(String.valueOf(s[sp])) == 0 ? 1 : 0); 
+        else
+          s[sp] = (Integer.parseInt(String.valueOf(s[sp])) == 0 ? 1 : 0); 
+        // s[sp] = (Integer.parseInt(String.valueOf(s[sp])) == 0 ? 1 : 0); 
+        break;
       case DUP: 
         s[sp+1] = s[sp]; sp++; break;
       case SWAP: 
