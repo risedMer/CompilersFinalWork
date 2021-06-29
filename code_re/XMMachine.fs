@@ -6,11 +6,13 @@ type instr =
   | Label of label                     (* symbolic label; pseudo-instruc. *)
   | FLabel of int * label              (* symbolic label; pseudo-instruc. *)
   | CSTI of int                        (* constant                        *)
-  | CSTFF of float32                   (* 辅助float                        *)
+  | CSTFF of float32                   (* 辅助float                       *)
   | CSTF of int                        (* constant float                  *)
   | OFFSET of int                      (* constant       偏移地址  x86     *) 
   | GVAR of int                        (* global var     全局变量  x86     *) 
   | ADD                                (* addition                        *)
+  | SEQAND                             (* &&                              *)
+  | SEQOR                              (* ||                              *)
   | SUB                                (* subtraction                     *)
   | MUL                                (* multiplication                  *)
   | DIV                                (* division                        *)
@@ -135,6 +137,12 @@ let CODESLEEP  = 27
 
 [<Literal>]
 let CODECSTFF  = 28f
+
+[<Literal>]
+let CODESEQAND  = 29
+
+[<Literal>]
+let CODESEQOR  = 30
 ;
 
 (*
@@ -172,6 +180,8 @@ let makelabenv (addr, labenv) instr =
     | GVAR i         -> (addr+2, labenv)
     | OFFSET i       -> (addr+2, labenv)
     | ADD            -> (addr+1, labenv)
+    | SEQAND         -> (addr+1, labenv)
+    | SEQOR          -> (addr+1, labenv)
     | SUB            -> (addr+1, labenv)
     | MUL            -> (addr+1, labenv)
     | DIV            -> (addr+1, labenv)
@@ -210,6 +220,8 @@ let rec emitints getlab instr ints =
     | GVAR i         -> CODECSTI   :: i :: ints
     | OFFSET i       -> CODECSTI   :: i :: ints
     | ADD            -> CODEADD    :: ints
+    | SEQAND         -> CODESEQAND :: ints
+    | SEQOR          -> CODESEQOR  :: ints
     | SUB            -> CODESUB    :: ints
     | MUL            -> CODEMUL    :: ints
     | DIV            -> CODEDIV    :: ints
@@ -254,6 +266,8 @@ let rec decomp ints : instr list =
     match ints with
     | []                                        ->  []
     | CODEADD :: ints_rest                      ->   ADD           :: decomp ints_rest
+    | CODESEQAND :: ints_rest                   ->   SEQAND        :: decomp ints_rest
+    | CODESEQOR  :: ints_rest                   ->   SEQOR         :: decomp ints_rest
     | CODESUB    :: ints_rest                   ->   SUB           :: decomp ints_rest
     | CODEMUL    :: ints_rest                   ->   MUL           :: decomp ints_rest
     | CODEDIV    :: ints_rest                   ->   DIV           :: decomp ints_rest

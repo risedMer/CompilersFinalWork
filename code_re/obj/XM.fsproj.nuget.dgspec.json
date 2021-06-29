@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\XM.fsproj": {}
+    "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\XM.fsproj": {}
   },
   "projects": {
-    "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\XM.fsproj": {
+    "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\XM.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\XM.fsproj",
+        "projectUniqueName": "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\XM.fsproj",
         "projectName": "XM",
-        "projectPath": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\XM.fsproj",
-        "packagesPath": "C:\\Users\\ZTY\\.nuget\\packages\\",
-        "outputPath": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\obj\\",
+        "projectPath": "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\XM.fsproj",
+        "packagesPath": "C:\\Users\\12079\\.nuget\\packages\\",
+        "outputPath": "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ZTY\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\12079\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }

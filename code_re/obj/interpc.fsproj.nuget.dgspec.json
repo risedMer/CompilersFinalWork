@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj": {}
+    "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\interpc.fsproj": {}
   },
   "projects": {
-    "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj": {
+    "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\interpc.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj",
+        "projectUniqueName": "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\interpc.fsproj",
         "projectName": "interpc",
-        "projectPath": "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj",
-        "packagesPath": "C:\\Users\\ZTY\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\obj\\",
+        "projectPath": "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\interpc.fsproj",
+        "packagesPath": "C:\\Users\\12079\\.nuget\\packages\\",
+        "outputPath": "D:\\bigThree\\编译原理\\CompilersFinalWork\\code_re\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ZTY\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\12079\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }

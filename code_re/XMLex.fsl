@@ -24,6 +24,9 @@ let keyword s =
     | "void"    -> VOID 
     | "while"   -> WHILE
     | "sleep"   -> SLEEP
+    | "String"  -> STRING
+    | "&&"      -> SEQAND
+    | "||"      -> SEQOR
     | _         -> NAME s
 
 // 字符串转义符处理函数

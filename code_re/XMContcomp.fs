@@ -253,21 +253,6 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
             | _     -> failwith "unknown primitive 2"))
     | Andalso(e1, e2) ->
       match C with
-      | IFZERO lab :: _ ->
-         cExpr e1 varEnv funEnv (IFZERO lab :: cExpr e2 varEnv funEnv C)
-      | IFNZRO labthen :: C1 -> 
-        let (labelse, C2) = addLabel C1
-        cExpr e1 varEnv funEnv
-           (IFZERO labelse 
-              :: cExpr e2 varEnv funEnv (IFNZRO labthen :: C2))
-      | _ ->
-        let (jumpend,  C1) = makeJump C
-        let (labfalse, C2) = addLabel (addCST 0 C1)
-        cExpr e1 varEnv funEnv
-          (IFZERO labfalse 
-             :: cExpr e2 varEnv funEnv (addJump jumpend C2))
-    | Orelse(e1, e2) -> 
-      match C with
       | IFNZRO lab :: _ -> 
         cExpr e1 varEnv funEnv (IFNZRO lab :: cExpr e2 varEnv funEnv C)
       | IFZERO labthen :: C1 ->

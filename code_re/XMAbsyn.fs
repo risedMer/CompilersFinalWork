@@ -7,6 +7,7 @@ type typ =
   | TypA of typ * int option         (* Array type                  *)
   | TypAF of typ * float32 option    (* Array float type            *)
   | TypP of typ                      (* Pointer type                *)
+  | TypString of typ * string option (* Array string type*)
                                                                    
 and expr =                           // 表达式，右值                                                
   | Access of access                 (* x    or  *p    or  a[e]     *) //访问左值（右值）

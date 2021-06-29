@@ -16,7 +16,9 @@ class Machine {
     CSTI = 0, ADD = 1, SUB = 2, MUL = 3, DIV = 4, MOD = 5, EQ = 6, LT = 7, NOT = 8, 
     DUP = 9, SWAP = 10, LDI = 11, STI = 12, GETBP = 13, GETSP = 14, INCSP = 15, 
     GOTO = 16, IFZERO = 17, IFNZRO = 18, CALL = 19, TCALL = 20, RET = 21, 
-    PRINTI = 22, PRINTC = 23, LDARGS = 24, STOP = 25, CSTF = 26, SLEEP = 27, CSTFF = 28;
+    PRINTI = 22, PRINTC = 23, LDARGS = 24, STOP = 25, CSTF = 26, SLEEP = 27, CSTFF = 28,
+    SEQAND = 29, SEQOR = 30;
+
 
   final static int STACKSIZE = 1000;
 
@@ -45,8 +47,21 @@ class Machine {
       switch (p[pc++]) {
       case CSTI:
         s[sp+1] = p[pc++]; sp++; break;
-      case ADD: 
+      case ADD:
         s[sp-1] = s[sp-1] + s[sp]; sp--; break;
+      case SEQAND:
+        if((s[sp-1] > 0) && (s[sp] > 0))
+          s[sp-1] = 1;
+        else 
+          s[sp-1] = 0;
+        sp--;
+        break;
+      case SEQOR:
+        if((s[sp-1] < 0) && (s[sp] < 0))
+          s[sp-1] =0;
+        else 
+          s[sp-1] =1;
+        sp--; break;
       case SUB: 
         s[sp-1] = s[sp-1] - s[sp]; sp--; break;
       case MUL: 
@@ -134,6 +149,8 @@ class Machine {
     switch (p[pc]) {
     case CSTI:   return "CSTI " + p[pc+1]; 
     case ADD:    return "ADD";
+    case SEQAND:  return "SEQAND";
+    case SEQOR:  return "SEQOR";
     case SUB:    return "SUB";
     case MUL:    return "MUL";
     case DIV:    return "DIV";
@@ -157,6 +174,7 @@ class Machine {
     case PRINTI: return "PRINTI";
     case PRINTC: return "PRINTC";
     case LDARGS: return "LDARGS";
+    case SLEEP:  return "SLEEP";
     case STOP:   return "STOP";
     default:     return "<unknown>";
     }

@@ -26,6 +26,8 @@ let keyword s =
     | "void"    -> VOID 
     | "while"   -> WHILE
     | "sleep"   -> SLEEP
+    | "&&"      -> SEQAND
+    | "||"      -> SEQOR
     | _         -> NAME s
 
 // 字符串转义符处理函数
@@ -42,7 +44,7 @@ let cEscape s =
     | "\\r"  -> '\r'
     | _      -> failwith "Lexer error: impossible C escape"
 
-# 45 "XMLex.fs"
+# 48 "XMLex.fs"
 let trans : uint16[] array = 
     [| 
     (* State 0 *)
@@ -181,266 +183,266 @@ let rec _fslex_dummy () = _fslex_dummy()
 and Token  lexbuf =
   match _fslex_tables.Interpret(25,lexbuf) with
   | 0 -> ( 
-# 45 "XMLex.fsl"
+# 48 "XMLex.fsl"
                                                                  Token lexbuf 
-# 186 "XMLex.fs"
+# 189 "XMLex.fs"
           )
   | 1 -> ( 
-# 46 "XMLex.fsl"
+# 49 "XMLex.fsl"
                                                                  lexbuf.EndPos <- lexbuf.EndPos.NextLine; Token lexbuf 
-# 191 "XMLex.fs"
+# 194 "XMLex.fs"
           )
   | 2 -> ( 
-# 47 "XMLex.fsl"
+# 50 "XMLex.fsl"
                                                                  CSTINT (System.Int32.Parse (lexemeAsString lexbuf)) 
-# 196 "XMLex.fs"
+# 199 "XMLex.fs"
           )
   | 3 -> ( 
-# 48 "XMLex.fsl"
+# 51 "XMLex.fsl"
                                                                  CSTFLOAT (System.Single.Parse (lexemeAsString lexbuf))
-# 201 "XMLex.fs"
+# 204 "XMLex.fs"
           )
   | 4 -> ( 
-# 49 "XMLex.fsl"
+# 52 "XMLex.fsl"
                                                                  keyword (lexemeAsString lexbuf) 
-# 206 "XMLex.fs"
+# 209 "XMLex.fs"
           )
   | 5 -> ( 
-# 50 "XMLex.fsl"
+# 53 "XMLex.fsl"
                                                                  PLUS 
-# 211 "XMLex.fs"
+# 214 "XMLex.fs"
           )
   | 6 -> ( 
-# 51 "XMLex.fsl"
+# 54 "XMLex.fsl"
                                                                  MINUS 
-# 216 "XMLex.fs"
+# 219 "XMLex.fs"
           )
   | 7 -> ( 
-# 52 "XMLex.fsl"
+# 55 "XMLex.fsl"
                                                                  TIMES 
-# 221 "XMLex.fs"
+# 224 "XMLex.fs"
           )
   | 8 -> ( 
-# 53 "XMLex.fsl"
+# 56 "XMLex.fsl"
                                                                  DIV 
-# 226 "XMLex.fs"
+# 229 "XMLex.fs"
           )
   | 9 -> ( 
-# 54 "XMLex.fsl"
+# 57 "XMLex.fsl"
                                                                  MOD 
-# 231 "XMLex.fs"
+# 234 "XMLex.fs"
           )
   | 10 -> ( 
-# 55 "XMLex.fsl"
+# 58 "XMLex.fsl"
                                                                  ASSIGN 
-# 236 "XMLex.fs"
+# 239 "XMLex.fs"
           )
   | 11 -> ( 
-# 56 "XMLex.fsl"
+# 59 "XMLex.fsl"
                                                                  EQ 
-# 241 "XMLex.fs"
+# 244 "XMLex.fs"
           )
   | 12 -> ( 
-# 57 "XMLex.fsl"
+# 60 "XMLex.fsl"
                                                                  NE 
-# 246 "XMLex.fs"
+# 249 "XMLex.fs"
           )
   | 13 -> ( 
-# 58 "XMLex.fsl"
+# 61 "XMLex.fsl"
                                                                  GT 
-# 251 "XMLex.fs"
+# 254 "XMLex.fs"
           )
   | 14 -> ( 
-# 59 "XMLex.fsl"
+# 62 "XMLex.fsl"
                                                                  LT 
-# 256 "XMLex.fs"
+# 259 "XMLex.fs"
           )
   | 15 -> ( 
-# 60 "XMLex.fsl"
+# 63 "XMLex.fsl"
                                                                  GE 
-# 261 "XMLex.fs"
+# 264 "XMLex.fs"
           )
   | 16 -> ( 
-# 61 "XMLex.fsl"
+# 64 "XMLex.fsl"
                                                                  LE 
-# 266 "XMLex.fs"
+# 269 "XMLex.fs"
           )
   | 17 -> ( 
-# 62 "XMLex.fsl"
+# 65 "XMLex.fsl"
                                                                  SEQOR 
-# 271 "XMLex.fs"
+# 274 "XMLex.fs"
           )
   | 18 -> ( 
-# 63 "XMLex.fsl"
+# 66 "XMLex.fsl"
                                                                  SEQAND 
-# 276 "XMLex.fs"
+# 279 "XMLex.fs"
           )
   | 19 -> ( 
-# 64 "XMLex.fsl"
+# 67 "XMLex.fsl"
                                                                  AMP 
-# 281 "XMLex.fs"
+# 284 "XMLex.fs"
           )
   | 20 -> ( 
-# 65 "XMLex.fsl"
+# 68 "XMLex.fsl"
                                                                  NOT 
-# 286 "XMLex.fs"
+# 289 "XMLex.fs"
           )
   | 21 -> ( 
-# 66 "XMLex.fsl"
+# 69 "XMLex.fsl"
                                                                  LPAR 
-# 291 "XMLex.fs"
+# 294 "XMLex.fs"
           )
   | 22 -> ( 
-# 67 "XMLex.fsl"
+# 70 "XMLex.fsl"
                                                                  RPAR 
-# 296 "XMLex.fs"
+# 299 "XMLex.fs"
           )
   | 23 -> ( 
-# 68 "XMLex.fsl"
+# 71 "XMLex.fsl"
                                                                  LBRACE 
-# 301 "XMLex.fs"
+# 304 "XMLex.fs"
           )
   | 24 -> ( 
-# 69 "XMLex.fsl"
+# 72 "XMLex.fsl"
                                                                  RBRACE 
-# 306 "XMLex.fs"
+# 309 "XMLex.fs"
           )
   | 25 -> ( 
-# 70 "XMLex.fsl"
+# 73 "XMLex.fsl"
                                                                  LBRACK 
-# 311 "XMLex.fs"
+# 314 "XMLex.fs"
           )
   | 26 -> ( 
-# 71 "XMLex.fsl"
+# 74 "XMLex.fsl"
                                                                  RBRACK 
-# 316 "XMLex.fs"
+# 319 "XMLex.fs"
           )
   | 27 -> ( 
-# 72 "XMLex.fsl"
+# 75 "XMLex.fsl"
                                                                  SEMI 
-# 321 "XMLex.fs"
+# 324 "XMLex.fs"
           )
   | 28 -> ( 
-# 73 "XMLex.fsl"
+# 76 "XMLex.fsl"
                                                                  COMMA 
-# 326 "XMLex.fs"
+# 329 "XMLex.fs"
           )
   | 29 -> ( 
-# 74 "XMLex.fsl"
+# 77 "XMLex.fsl"
                                                                  EndLineComment lexbuf; Token lexbuf 
-# 331 "XMLex.fs"
+# 334 "XMLex.fs"
           )
   | 30 -> ( 
-# 75 "XMLex.fsl"
+# 78 "XMLex.fsl"
                                      Comment lexbuf; Token lexbuf 
-# 336 "XMLex.fs"
+# 339 "XMLex.fs"
           )
   | 31 -> ( 
-# 76 "XMLex.fsl"
+# 79 "XMLex.fsl"
                                      CSTSTRING (String [] lexbuf) 
-# 341 "XMLex.fs"
+# 344 "XMLex.fs"
           )
   | 32 -> ( 
-# 77 "XMLex.fsl"
+# 80 "XMLex.fsl"
                                      EOF 
-# 346 "XMLex.fs"
+# 349 "XMLex.fs"
           )
   | 33 -> ( 
-# 78 "XMLex.fsl"
+# 81 "XMLex.fsl"
                                      failwith "Lexer error: illegal symbol" 
-# 351 "XMLex.fs"
+# 354 "XMLex.fs"
           )
   | _ -> failwith "Token"
 // Rule Comment
 and Comment  lexbuf =
   match _fslex_tables.Interpret(16,lexbuf) with
   | 0 -> ( 
-# 81 "XMLex.fsl"
+# 84 "XMLex.fsl"
                                      Comment lexbuf; Comment lexbuf 
-# 360 "XMLex.fs"
+# 363 "XMLex.fs"
           )
   | 1 -> ( 
-# 82 "XMLex.fsl"
+# 85 "XMLex.fsl"
                                      () 
-# 365 "XMLex.fs"
+# 368 "XMLex.fs"
           )
   | 2 -> ( 
-# 83 "XMLex.fsl"
+# 86 "XMLex.fsl"
                                      lexbuf.EndPos <- lexbuf.EndPos.NextLine; Comment lexbuf 
-# 370 "XMLex.fs"
+# 373 "XMLex.fs"
           )
   | 3 -> ( 
-# 84 "XMLex.fsl"
+# 87 "XMLex.fsl"
                                      failwith "Lexer error: unterminated comment" 
-# 375 "XMLex.fs"
+# 378 "XMLex.fs"
           )
   | 4 -> ( 
-# 85 "XMLex.fsl"
+# 88 "XMLex.fsl"
                                      Comment lexbuf 
-# 380 "XMLex.fs"
+# 383 "XMLex.fs"
           )
   | _ -> failwith "Comment"
 // Rule EndLineComment
 and EndLineComment  lexbuf =
   match _fslex_tables.Interpret(11,lexbuf) with
   | 0 -> ( 
-# 88 "XMLex.fsl"
+# 91 "XMLex.fsl"
                                      lexbuf.EndPos <- lexbuf.EndPos.NextLine 
-# 389 "XMLex.fs"
+# 392 "XMLex.fs"
           )
   | 1 -> ( 
-# 89 "XMLex.fsl"
+# 92 "XMLex.fsl"
                                      () 
-# 394 "XMLex.fs"
+# 397 "XMLex.fs"
           )
   | 2 -> ( 
-# 90 "XMLex.fsl"
+# 93 "XMLex.fsl"
                                      EndLineComment lexbuf 
-# 399 "XMLex.fs"
+# 402 "XMLex.fs"
           )
   | _ -> failwith "EndLineComment"
 // Rule String
 and String chars lexbuf =
   match _fslex_tables.Interpret(0,lexbuf) with
   | 0 -> ( 
-# 93 "XMLex.fsl"
+# 96 "XMLex.fsl"
                              Microsoft.FSharp.Core.String.concat "" (List.map string (List.rev chars)) 
-# 408 "XMLex.fs"
+# 411 "XMLex.fs"
           )
   | 1 -> ( 
-# 98 "XMLex.fsl"
+# 101 "XMLex.fsl"
                        String (cEscape (lexemeAsString lexbuf) :: chars) lexbuf 
-# 413 "XMLex.fs"
+# 416 "XMLex.fs"
           )
   | 2 -> ( 
-# 99 "XMLex.fsl"
+# 102 "XMLex.fsl"
                              String ('\'' :: chars) lexbuf 
-# 418 "XMLex.fs"
+# 421 "XMLex.fs"
           )
   | 3 -> ( 
-# 100 "XMLex.fsl"
+# 103 "XMLex.fsl"
                              failwith "Lexer error: illegal escape sequence" 
-# 423 "XMLex.fs"
+# 426 "XMLex.fs"
           )
   | 4 -> ( 
-# 101 "XMLex.fsl"
+# 104 "XMLex.fsl"
                                           failwith "Lexer error: unterminated string" 
-# 428 "XMLex.fs"
+# 431 "XMLex.fs"
           )
   | 5 -> ( 
-# 103 "XMLex.fsl"
+# 106 "XMLex.fsl"
                                   failwith "Lexer error: newline in string" 
-# 433 "XMLex.fs"
+# 436 "XMLex.fs"
           )
   | 6 -> ( 
-# 105 "XMLex.fsl"
+# 108 "XMLex.fsl"
                        failwith "Lexer error: invalid character in string" 
-# 438 "XMLex.fs"
+# 441 "XMLex.fs"
           )
   | 7 -> ( 
-# 106 "XMLex.fsl"
+# 109 "XMLex.fsl"
                              String (char (lexbuf.LexemeChar 0) :: chars) lexbuf 
-# 443 "XMLex.fs"
+# 446 "XMLex.fs"
           )
   | _ -> failwith "String"
 

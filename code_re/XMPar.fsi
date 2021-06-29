@@ -21,6 +21,8 @@ type token =
   | LT
   | GE
   | LE
+  | ANDAND
+  | OROR
   | PLUS
   | MINUS
   | TIMES
@@ -38,6 +40,7 @@ type token =
   | WHILE
   | FLOAT
   | SLEEP
+  | STRING
   | CSTFLOAT of (float32)
   | CSTSTRING of (string)
   | NAME of (string)
@@ -64,6 +67,8 @@ type tokenId =
     | TOKEN_LT
     | TOKEN_GE
     | TOKEN_LE
+    | TOKEN_ANDAND
+    | TOKEN_OROR
     | TOKEN_PLUS
     | TOKEN_MINUS
     | TOKEN_TIMES
@@ -81,6 +86,7 @@ type tokenId =
     | TOKEN_WHILE
     | TOKEN_FLOAT
     | TOKEN_SLEEP
+    | TOKEN_STRING
     | TOKEN_CSTFLOAT
     | TOKEN_CSTSTRING
     | TOKEN_NAME
