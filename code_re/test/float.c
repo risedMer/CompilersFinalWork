@@ -6,7 +6,7 @@ void main(int n) {
     float z;
     z = x + y;
     print z;
-    z = x - y;
+    z = x - 5;
     print z;
     z = x * y;
     print z;

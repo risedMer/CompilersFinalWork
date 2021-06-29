@@ -210,6 +210,7 @@ class Machine {
     case STOP:   return "STOP";
     case CSTF:   return "CSTF";
     case SLEEP:  return "SLEEP";
+    case CSTC:   return "CSTC";
     default:     return "<unknown>";
     }
   }
