@@ -53,7 +53,9 @@ rule Token = parse
   | '+'                                         { PLUS }
   | '-'                                         { MINUS } 
   | '*'                                         { TIMES } 
-  | '/'                                         { DIV } 
+  | '/'                                         { DIV }
+  | "++"                                        { SELFPLUS }
+  | "--"                                        { SELFMINUS }
   | '%'                                         { MOD }                     
   | '='                                         { ASSIGN } 
   | "=="                                        { EQ } 

@@ -17,7 +17,7 @@ let thd (_, _, c) = c
 %token <char> CSTCHAR
 
 %token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE DO FOR FLOAT SLEEP
-%token PLUS MINUS TIMES DIV MOD
+%token PLUS MINUS TIMES DIV MOD SELFPLUS SELFMINUS
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
 %token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP BREAK
@@ -30,7 +30,8 @@ let thd (_, _, c) = c
 %left EQ NE 
 %nonassoc GT LT GE LE
 %left PLUS MINUS
-%left TIMES DIV MOD 
+%left TIMES DIV MOD
+%right SELFPLUS SELFMINUS
 %nonassoc NOT AMP 
 %nonassoc LBRACK          /* highest precedence  */
 
@@ -135,6 +136,10 @@ ExprNotAccess:
   | NOT Expr                            { Prim1("!", $2)      }
   | PRINT Expr                          { Prim1("printi", $2) }
   | PRINTLN                             { Prim1("printc", nl) }
+  | Expr SELFPLUS                       { Prim1("i++", $1)    }
+  | Expr SELFMINUS                      { Prim1("i--", $1)    }
+  | SELFPLUS Expr                       { Prim1("++i", $2)    }
+  | SELFMINUS Expr                      { Prim1("--i", $2)    }
   | SLEEP Expr                          { Prim1("sleep", $2)  }
   | Expr PLUS  Expr                     { Prim2("+",  $1, $3) }
   | Expr MINUS Expr                     { Prim2("-",  $1, $3) }

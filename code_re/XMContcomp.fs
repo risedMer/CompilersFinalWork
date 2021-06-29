@@ -279,11 +279,28 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
     | CstC i         -> addCSTC i C
     | Addr acc       -> cAccess acc varEnv funEnv C
     | Prim1(ope, e1) ->
+      let rec tmp stat =
+        match stat with
+        | Access (c) -> c
       cExpr e1 varEnv funEnv
           (match ope with
            | "!"      -> addNOT C
            | "printi" -> PRINTI :: C
            | "sleep"  -> SLEEP  :: C
+           | "i++"    -> 
+              let ass = Assign (tmp e1, Prim2 ("+", Access (tmp e1), CstI 1))
+              cExpr ass varEnv funEnv (addINCSP -1 C)
+           | "i--"    -> 
+              let ass = Assign (tmp e1, Prim2 ("-", Access (tmp e1), CstI 1))
+              cExpr ass varEnv funEnv (addINCSP -1 C)
+           | "++i"    ->
+              let ass = Assign (tmp e1, Prim2 ("+", Access (tmp e1), CstI 1))
+              let C1 = cExpr ass varEnv funEnv C
+              CSTI 1 :: ADD :: (addINCSP -1 C1)
+           | "--i"    ->
+              let ass = Assign (tmp e1, Prim2 ("-", Access (tmp e1), CstI 1))
+              let C1 = cExpr ass varEnv funEnv C
+              CSTI 1 :: SUB :: (addINCSP -1 C1)
            | "printc" -> PRINTC :: C
            | _        -> failwith "unknown primitive 1")
     | Prim2(ope, e1, e2) ->
