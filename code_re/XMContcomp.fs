@@ -75,6 +75,11 @@ let addJump jump C =                    (* jump is GOTO or RET *)
 let addGOTO lab C =
     addJump (GOTO lab) C
 
+let rec headlab labs = 
+    match labs with
+        | lab :: tr -> lab
+        | []        -> failwith "Error: unknown break"
+
 let rec addCST i C =
     match (i, C) with
     | (0, ADD        :: C1) -> C1
@@ -158,6 +163,10 @@ let makeGlobalEnvs(topdecs : topdec list) : VarEnv * FunEnv * instr list =
             let (varEnv1, code1) = allocate Glovar (typ, x) varEnv
             let (varEnvr, funEnvr, coder) = addv decr varEnv1 funEnv
             (varEnvr, funEnvr, code1 @ coder)
+          // | VardecAndAssign (typ, x, e) ->
+          //   let (varEnv1, code1) = allocate Glovar (typ, x) varEnv
+          //   let (varEnvr, funEnvr, coder) = addv decr varEnv1 funEnv
+          //   (varEnvr, funEnvr, code1 @ (cAccess (AccVar(x)) varEnvr funEnvr (cExpr e varEnvr funEnvr (STI :: (addINCSP -1 coder)))))
           | Fundec (tyOpt, f, xs, body) ->
             addv decr varEnv ((f, (newLabel(), tyOpt, xs)) :: funEnv)
     addv topdecs ([], 0) []
@@ -234,6 +243,9 @@ and bStmtordec stmtOrDec varEnv : bstmtordec * VarEnv =
     | Dec (typ, x) ->
       let (varEnv1, code) = allocate Locvar (typ, x) varEnv 
       (BDec code, varEnv1)
+    // | DecAndAssign (typ, x, e) ->
+    //   let (varEnv1, code) = allocate Locvar (typ, x) varEnv
+    //   (BDec (cAccess (AccVar(x)) varEnv1 (cExpr e varEnv1 (STI :: (addINCSP -1 code)))), varEnv1)
 
 (* Compiling micro-C expressions: 
 
@@ -359,6 +371,7 @@ let cProgram (Prog topdecs) : instr list =
         List.choose (function 
                          | Fundec (rTy, name, argTy, body) 
                                     -> Some (compilefun (rTy, name, argTy, body))
+                         | VardecAndAssign _ -> None
                          | Vardec _ -> None)
                          topdecs
     let (mainlab, _, mainparams) = lookup funEnv "main"

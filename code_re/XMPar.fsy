@@ -4,6 +4,10 @@ open XMAbsyn
 
 let compose1 f (g, s) = ((fun x -> g(f(x))), s)
 let nl = CstI 10 //  \n 的 ASCII 码
+let fit (a, _, _) = a
+let sed (_, b, _) = b
+let thd (_, _, c) = c
+
 %}
 
 // 定义了int和string类型
@@ -16,7 +20,7 @@ let nl = CstI 10 //  \n 的 ASCII 码
 %token PLUS MINUS TIMES DIV MOD
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
-%token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP
+%token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP BREAK
 %token EOF
 
 %right ASSIGN             /* lowest precedence */  // 最下面的优先级最高
@@ -48,6 +52,7 @@ Topdecs:
 Topdec: 
     Vardec SEMI                         { Vardec (fst $1, snd $1) }
   | Fundec                              { $1 }
+  | VardecAndAssign SEMI                { VardecAndAssign (fit $1, sed $1, thd $1) }
 ;
 
 Vardec:
@@ -60,6 +65,10 @@ Vardesc:
   | LPAR Vardesc RPAR                   { $2                                      }
   | Vardesc LBRACK RBRACK               { compose1 (fun t -> TypA(t, None)) $1    }
   | Vardesc LBRACK CSTINT RBRACK        { compose1 (fun t -> TypA(t, Some $3)) $1 }
+;
+
+VardecAndAssign:
+    Type Vardesc ASSIGN Expr             { ((fst $2) $1, snd $2, $4) }
 ;
 
 Fundec:
@@ -86,6 +95,7 @@ StmtOrDecSeq:
     /* empty */                         { [] }
   | Stmt StmtOrDecSeq                   { Stmt $1 :: $2 }
   | Vardec SEMI StmtOrDecSeq            { Dec (fst $1, snd $1) :: $3 }
+  | VardecAndAssign SEMI StmtOrDecSeq   { DecAndAssign (fit $1, sed $1, thd $1) :: $3 }
 ;
 
 Stmt: 

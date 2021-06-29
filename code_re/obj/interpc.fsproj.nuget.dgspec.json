@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj": {}
+    "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\interpc.fsproj": {}
   },
   "projects": {
-    "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj": {
+    "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\interpc.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj",
+        "projectUniqueName": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\interpc.fsproj",
         "projectName": "interpc",
-        "projectPath": "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\interpc.fsproj",
+        "projectPath": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\interpc.fsproj",
         "packagesPath": "C:\\Users\\ZTY\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ZTY\\OneDrive\\桌面\\plzoofs\\microc\\obj\\",
+        "outputPath": "E:\\大三下\\编程语言原理与编译\\CompilersFinalWork\\code_re\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ZTY\\AppData\\Roaming\\NuGet\\NuGet.Config"
