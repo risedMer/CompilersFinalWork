@@ -107,6 +107,7 @@ StmtM:  /* No unbalanced if-else */
     Expr SEMI                           { Expr($1)             }
   | RETURN SEMI                         { Return None          }
   | RETURN Expr SEMI                    { Return(Some($2))     }
+  | BREAK SEMI                          { Break                }
   | Block                               { $1                   }
   | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM { For($3, $5, $7, $9) }

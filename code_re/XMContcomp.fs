@@ -37,6 +37,11 @@ let rec addCSTC i C =
     match (i, C) with
     | _ -> (CSTC ((int32)(System.BitConverter.ToInt16(System.BitConverter.GetBytes(char(i)), 0)))) :: C
 
+let rec headlab labs = 
+    match labs with
+    | lab :: tr -> lab
+    | []        -> failwith "Error: unknown break"
+
 let makeJump C : instr * instr list =          (* Unconditional jump to C *)
     match C with
     | RET m              :: _ -> (RET m, C)
@@ -74,11 +79,6 @@ let addJump jump C =                    (* jump is GOTO or RET *)
     
 let addGOTO lab C =
     addJump (GOTO lab) C
-
-let rec headlab labs = 
-    match labs with
-        | lab :: tr -> lab
-        | []        -> failwith "Error: unknown break"
 
 let rec addCST i C =
     match (i, C) with
@@ -181,6 +181,12 @@ let makeGlobalEnvs(topdecs : topdec list) : VarEnv * FunEnv * instr list =
    * C       is the code that follows the code for stmt
 *)
 
+let rec xmStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (lablist : LabEnv) (C : instr list) : instr list =
+    match stmt with
+    | Break ->
+      let labend = headlab lablist
+      addGOTO labend C
+
 let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr list = 
     match stmt with
     | If(e, stmt1, stmt2) -> 
@@ -207,7 +213,6 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
       let labend = newLabel()
       let labbegin = newLabel()
       let laboperations = newLabel()
-      // let lablist = labend :: laboperations :: lablist
       let Cend = Label labend :: C
       let (jumptest, C2) =
         makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: Cend))
@@ -231,6 +236,9 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
           | (BDec code,  varEnv) :: sr -> code @ pass2 sr C
           | (BStmt stmt, varEnv) :: sr -> cStmt stmt varEnv funEnv (pass2 sr C)
       pass2 stmtsback (addINCSP(snd varEnv - fdepthend) C)
+    // | Break ->
+    //   let labend = headlab lablist
+    //   addGOTO labend C
     | Return None -> 
       RET (snd varEnv - 1) :: deadcode C
     | Return (Some e) -> 
@@ -366,12 +374,13 @@ let cProgram (Prog topdecs) : instr list =
         let (envf, fdepthf) = bindParams paras (globalVarEnv, 0)
         let C0 = [RET (List.length paras-1)]
         let code = cStmt body (envf, fdepthf) funEnv C0
+
         Label labf :: code
     let functions = 
         List.choose (function 
                          | Fundec (rTy, name, argTy, body) 
                                     -> Some (compilefun (rTy, name, argTy, body))
-                         | VardecAndAssign _ -> None
+                        //  | VardecAndAssign _ -> None
                          | Vardec _ -> None)
                          topdecs
     let (mainlab, _, mainparams) = lookup funEnv "main"
