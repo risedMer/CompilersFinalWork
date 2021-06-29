@@ -2,6 +2,8 @@
 #load "XMAbsyn.fs" "XMPar.fs" "XMLex.fs" "Debug.fs" "Parse.fs" "XMMachine.fs" "Backend.fs" "XMContcomp.fs" "ParseAndComp.fs";;
 open ParseAndComp;;
 Debug.debug <-  true;;
+compileToFile (fromFile "test\\char.c") "output\\char";;
+
 compileToFile (fromFile "test\\test1.c") "output\\ex1";;
 
 compileToFile (fromFile "test\\float.c") "output\\float";;

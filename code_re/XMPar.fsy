@@ -10,8 +10,9 @@ let nl = CstI 10 //  \n 的 ASCII 码
 %token <int> CSTINT CSTBOOL  // <int> 是词元的语义值类型
 %token <string> CSTSTRING NAME
 %token <float32> CSTFLOAT // float
+%token <char> CSTCHAR
 
-%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE DO FLOAT SLEEP
+%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE DO FOR FLOAT SLEEP
 %token PLUS MINUS TIMES DIV MOD
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
@@ -98,6 +99,7 @@ StmtM:  /* No unbalanced if-else */
   | RETURN Expr SEMI                    { Return(Some($2))     }
   | Block                               { $1                   }
   | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
+  | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM { For($3, $5, $7, $9) }
   | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
   | DO StmtM WHILE LPAR Expr RPAR SEMI  { DoWhile($2, $5)      }
 ;
@@ -106,6 +108,7 @@ StmtU:
     IF LPAR Expr RPAR StmtM ELSE StmtU  { If($3, $5, $7)       }
   | IF LPAR Expr RPAR Stmt              { If($3, $5, Block []) }
   | WHILE LPAR Expr RPAR StmtU          { While($3, $5)        }
+  | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtU { For($3, $5, $7, $9) }
   | DO StmtU WHILE LPAR Expr RPAR SEMI  { DoWhile($2, $5)      }
 ;
 
@@ -141,6 +144,7 @@ AtExprNotAccess:
     //不可以为左值的的基本情况 
     Const                               { CstI $1             }
   | ConstF                              { CstF $1             }
+  | ConstC                              { CstC $1             }
   | LPAR ExprNotAccess RPAR             { $2                  } 
   | AMP Access                          { Addr $2             } // 取地址
 ;
@@ -173,6 +177,10 @@ Const:
 ConstF:
     CSTFLOAT                            { $1       }
   | MINUS CSTFLOAT                      { - $2     }
+;
+
+ConstC:
+    CSTCHAR                             { $1       }
 ;
 
 Type:

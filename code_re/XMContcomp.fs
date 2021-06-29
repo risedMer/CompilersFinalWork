@@ -32,6 +32,11 @@ let rec addCSTF i C =
     match (i, C) with
     | _ -> (CSTF (System.BitConverter.ToInt32(System.BitConverter.GetBytes(float32(i)), 0))) :: C
 
+// char
+let rec addCSTC i C =
+    match (i, C) with
+    | _ -> (CSTC ((int32)(System.BitConverter.ToInt16(System.BitConverter.GetBytes(char(i)), 0)))) :: C
+
 let makeJump C : instr * instr list =          (* Unconditional jump to C *)
     match C with
     | RET m              :: _ -> (RET m, C)
@@ -189,6 +194,17 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
     //   let (jumptest, C1) = 
     //        makeJump (cExpr expr varEnv funEnv (IFNZRO labbegin :: C))
     //   addJump jumptest (Label labbegin :: cStmt stmt varEnv funEnv C1)
+    | For(dec, e, operations, body) ->
+      let labend = newLabel()
+      let labbegin = newLabel()
+      let laboperations = newLabel()
+      // let lablist = labend :: laboperations :: lablist
+      let Cend = Label labend :: C
+      let (jumptest, C2) =
+        makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: Cend))
+      let C3 = Label laboperations :: cExpr operations varEnv funEnv (addINCSP -1 C2)
+      let C4 = cStmt body varEnv funEnv C3
+      cExpr dec varEnv funEnv (addINCSP -1 (addJump jumptest (Label labbegin :: C4)))
     | Expr e -> 
       cExpr e varEnv funEnv (addINCSP -1 C) 
     | Block stmts -> 
@@ -240,6 +256,7 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
     | Assign(acc, e) -> cAccess acc varEnv funEnv (cExpr e varEnv funEnv (STI :: C))
     | CstI i         -> addCST i C
     | CstF i         -> addCSTF i C
+    | CstC i         -> addCSTC i C
     | Addr acc       -> cAccess acc varEnv funEnv C
     | Prim1(ope, e1) ->
       cExpr e1 varEnv funEnv

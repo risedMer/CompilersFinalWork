@@ -13,6 +13,7 @@ and expr =                           // 表达式，右值
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
   | CstI of int                      (* Constant                    *)
   | CstF of float32                  (* Constant float              *)
+  | CstC of char                     (* Constant char               *)
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
   | Andalso of expr * expr           (* Sequential and              *)
@@ -31,6 +32,7 @@ and stmt =
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
+  | For of expr * expr * expr * stmt (* For loop                    *)
   // 语句块内部，可以是变量声明 或语句的列表                                                              
 
 and stmtordec =                                                    
