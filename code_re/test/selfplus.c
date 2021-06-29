@@ -1,6 +1,10 @@
 void main(int n) {
     int i;
     i = 5;
-    for(i;i < 10;i++)
-        print i;
+    int x;
+    x = ++i;
+    int y;
+    y = --n;
+    println x;
+    println y;
 }

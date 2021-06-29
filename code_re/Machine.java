@@ -153,7 +153,7 @@ class Machine {
       case PRINTI:
         System.out.print(s[sp] + " "); break; 
       case PRINTC:
-        System.out.print((char)(s[sp])); break;
+        System.out.println(s[sp] + " "); break;
       case LDARGS:
 	for (int i=0; i<iargs.length; i++) // Push commandline arguments
 	  s[++sp] = iargs[i];
