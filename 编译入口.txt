@@ -2,14 +2,26 @@
 #load "XMAbsyn.fs" "XMPar.fs" "XMLex.fs" "Debug.fs" "Parse.fs" "XMMachine.fs" "Backend.fs" "XMContcomp.fs" "ParseAndComp.fs";;
 open ParseAndComp;;
 Debug.debug <-  true;;
+compileToFile (fromFile "test\\andor.c") "output\\andor";;
+
+compileToFile (fromFile "test\\annotation.c") "output\\annotation";;
+
 compileToFile (fromFile "test\\char.c") "output\\char";;
 
-compileToFile (fromFile "test\\test1.c") "output\\ex1";;
+compileToFile (fromFile "test\\dowhile.c") "output\\dowhile";;
 
 compileToFile (fromFile "test\\float.c") "output\\float";;
 
+compileToFile (fromFile "test\\for.c") "output\\for";;
+
+compileToFile (fromFile "test\\println.c") "output\\println";;
+
+compileToFile (fromFile "test\\selfplus.c") "output\\selfplus";;
+
+compileToFile (fromFile "test\\selfplus2.c") "output\\selfplus2";;
+
 compileToFile (fromFile "test\\sleep.c") "output\\sleep";;
 
-compileToFile (fromFile "test\\annotation.c") "output\\annotation";;
+compileToFile (fromFile "test\\void.c") "output\\void";;
 
 java Machine test1.out 10
